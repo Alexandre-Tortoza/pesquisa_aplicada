@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 import pandas as pd
@@ -60,6 +59,7 @@ def load_and_clean_dataset(file_path: str, output_path: str | None = None) -> pd
     if "day" in cleaned_df.columns:
         cleaned_df = cleaned_df[cleaned_df["day"].dt.year >= 2018].copy()
 
+    # 6. (Opcional) Exporta o DataFrame limpo
     if output_path:
         cleaned_df.to_csv(output_path, index=False)
         print(f"✅ Dataset limpo salvo em: {output_path}")
