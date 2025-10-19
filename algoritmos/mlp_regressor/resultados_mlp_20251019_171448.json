@@ -1,0 +1,33 @@
+{
+  "timestamp": "2025-10-19T17:17:08.874840",
+  "configuration": {
+    "strategy": "holdout",
+    "hidden_layer_sizes": [
+      100,
+      50,
+      25
+    ],
+    "activation": "relu",
+    "solver": "adam",
+    "learning_rate_init": 0.001,
+    "max_iter": 500,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "metrics": {
+    "train_mae": 985.7874254781626,
+    "test_mae": 988.5338264751042,
+    "train_rmse": 1530.758219910251,
+    "test_rmse": 1531.5661024879062,
+    "train_r2": 0.46977088298931513,
+    "test_r2": 0.4700165053044375,
+    "n_iterations": 179
+  }
+}

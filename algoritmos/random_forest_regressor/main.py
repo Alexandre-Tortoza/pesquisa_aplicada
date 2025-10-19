@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """
-Previsão de Congestionamento de Trânsito usando Random Forest Regressor
+    Previsão de Congestionamento de Trânsito usando Random Forest Regressor
 
-Pipeline modular para prever tamanho_congestionamento baseado em população
-e outras features. Suporta validação cruzada, holdout e análise SHAP.
-
-Dataset: ../../dataset/preparedData/dataset.csv
+   Autor: Alexandre Marques Tortoza Canoa
+    Versão do Python: 3.13.7
 """
 
 import pandas as pd
