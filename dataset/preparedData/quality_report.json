@@ -1,0 +1,32 @@
+{
+  "rows_traffic_in": 1062707,
+  "rows_population_in": 16128,
+  "rows_out": 2125414,
+  "unique_regioes": 5,
+  "year_range_traffic": {
+    "min": 2018,
+    "max": 2023
+  },
+  "pop_agg_rows": 70,
+  "numeric_describe": {
+    "tamanho_congestionamento": {
+      "mean": 1418.5715460611439,
+      "median": 944.0,
+      "std": 1477.0077551048278,
+      "min": 51.0,
+      "max": 23200.0,
+      "q25": 590.0,
+      "q75": 1690.0
+    },
+    "pop_total": {
+      "mean": 793773.4841108603,
+      "median": 479455.0,
+      "std": 561612.1917689935,
+      "min": 172409.0,
+      "max": 1624796.0,
+      "q25": 202527.0,
+      "q75": 1377772.0
+    }
+  },
+  "note": "Cada linha de tráfego foi expandida para no máximo 2 linhas por sexo, usando população total (>=20 anos) por região e ano."
+}
