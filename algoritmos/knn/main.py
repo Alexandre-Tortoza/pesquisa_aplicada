@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """
-Previsão de Congestionamento de Trânsito usando KNN
-
-Pipeline modular para prever tamanho_congestionamento baseado em população
-e outras features. Suporta validação cruzada, holdout e análise SHAP.
-
-Dataset: ../../dataset/preparedData/dataset.csv
+    Previsão de Congestionamento de Trânsito usando KNN
+    
+    Autor: Alexandre Marques Tortoza Canoa
+    Versão do Python: 3.13.7
 """
 
 import pandas as pd
@@ -24,54 +22,53 @@ try:
     HAS_SHAP = True
 except ImportError:
     HAS_SHAP = False
-    print("⚠️  Para usar SHAP: pip install shap")
+    print("\uea6c  Para usar SHAP: pip install shap")
 
 warnings.filterwarnings('ignore')
 
-# ============================================================================
+# ===========================================================================
 # CONFIGURAÇÕES GLOBAIS - ALTERE CONFORME NECESSÁRIO
 # ============================================================================
 
 class ConfigKNN:
     """Centraliza todas as configurações do experimento."""
     
-    # 📁 Caminhos
     DATASET_PATH = "../../dataset/preparedData/dataset.csv"
-    DELIMITER = ";"  # Delimitador do CSV
+    DELIMITER = ";"
     
-    # 🔧 Estratégia de Validação
+    # Estratégia de Validação
     # Opções: 'holdout' ou 'kfold'
     VALIDATION_STRATEGY = 'holdout'
     HOLDOUT_TEST_SIZE = 0.2  # Proporção teste (0.2 = 80/20)
     KFOLD_N_SPLITS = 5  # Número de folds para validação cruzada
     RANDOM_STATE = 42
     
-    # 🤖 Hiperparâmetros do KNN
+    # Hiperparâmetros do KNN
     N_NEIGHBORS = 5  # Número de vizinhos
     WEIGHTS = 'distance'  # 'uniform' ou 'distance'
     METRIC = 'minkowski'  # Métrica de distância
     
-    # 📊 Features e Target
+    # Features e Target
     FEATURES = [
-        'pop_total',          # População total (principal feature)
-        'hora_numeric',       # Hora do dia (0-23)
-        'via_expressa_encoded',  # Via expressa (E, N, S, W)
-        'regiao_encoded',     # Região (east, center, etc)
-        'sexo_encoded',       # Sexo (Homens, Mulheres)
-        'dia_semana',         # Dia da semana (0-6)
-        'mes',                # Mês (1-12)
+        'pop_total',            # População total (principal feature)
+        'hora_numeric',         # Hora do dia (0-23)
+        'via_expressa_encoded', # Via expressa (E, N, S, W)
+        'regiao_encoded',       # Região (east, center, etc)
+        'sexo_encoded',         # Sexo (Homens, Mulheres)
+        'dia_semana',           # Dia da semana (0-6)
+        'mes',                  # Mês (1-12)
     ]
     TARGET = 'tamanho_congestionamento'
     
-    # 🎯 SHAP
+    # SHAP
     SHAP_ENABLED = True
     SHAP_N_SAMPLES = 100  # Amostras para explicabilidade
     
-    # 📈 Visualizações
+    #  Visualizações
     PLOT_RESULTS = True
     PLOT_SHAP = True
     
-    # 📝 Logs
+    # Logs
     VERBOSE = True
     SAVE_RESULTS = True
     RESULTS_FILE = f"resultados_knn_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
@@ -83,78 +80,75 @@ class ConfigKNN:
 
 def load_data(filepath: str, delimiter: str = ";") -> pd.DataFrame:
     """
-    Carrega o dataset do arquivo CSV.
-    
-    Args:
-        filepath: Caminho do arquivo
-        delimiter: Delimitador do CSV
+        Carrega o dataset do arquivo CSV.
         
-    Returns:
-        DataFrame com os dados carregados
+        Args:
+            filepath: Caminho do arquivo
+            delimiter: Delimitador do CSV
+            
+        Returns:
+            DataFrame com os dados carregados
     """
     try:
-        # Tenta diferentes encodings
         for encoding in ['utf-8', 'latin-1', 'iso-8859-1']:
             try:
                 df = pd.read_csv(filepath, delimiter=delimiter, encoding=encoding)
                 if ConfigKNN.VERBOSE:
-                    print(f"✓ Dataset carregado: {df.shape}")
+                    print(f"\uf05dDataset carregado: {df.shape}")
                     print(f"  Encoding: {encoding}")
                     print(f"  Colunas: {list(df.columns)}\n")
                 return df
             except UnicodeDecodeError:
                 continue
     except FileNotFoundError:
-        print(f"❌ Arquivo não encontrado: {filepath}")
+        print(f"\uea87 Arquivo não encontrado: {filepath}")
         raise
     
-    print(f"❌ Não foi possível carregar o arquivo com nenhum encoding")
+    print(f"\uea87 Não foi possível carregar o arquivo com nenhum encoding")
     raise ValueError("Erro ao carregar arquivo")
 
 
 def extract_datetime_features(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Extrai features temporais das colunas 'data' e 'hora'.
-    
-    Args:
-        df: DataFrame com colunas 'data' e 'hora'
+        Extrai features temporais das colunas 'data' e 'hora'.
         
-    Returns:
-        DataFrame com novas colunas de features temporais
+        Args:
+            df: DataFrame com colunas 'data' e 'hora'
+            
+        Returns:
+            DataFrame com novas colunas de features temporais
     """
     if ConfigKNN.VERBOSE:
-        print("🕐 Extraindo features temporais...")
+        print("\uf017 Extraindo features temporais...")
     
-    # Combina data e hora
     df['datetime'] = pd.to_datetime(
         df['data'] + ' ' + df['hora'],
         format='%Y-%m-%d %H:%M:%S'
     )
     
-    # Extrai features
     df['hora_numeric'] = df['datetime'].dt.hour
     df['dia_semana'] = df['datetime'].dt.dayofweek  # 0=segunda, 6=domingo
     df['mes'] = df['datetime'].dt.month
     df['dia_mes'] = df['datetime'].dt.day
     
     if ConfigKNN.VERBOSE:
-        print("  ✓ Features: hora_numeric, dia_semana, mes, dia_mes\n")
+        print("  \uf05d Features: hora_numeric, dia_semana, mes, dia_mes\n")
     
     return df
 
 
 def encode_categorical_features(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Codifica features categóricas em numéricas.
-    
-    Args:
-        df: DataFrame com features categóricas
+        Codifica features categóricas em numéricas.
         
-    Returns:
-        DataFrame com features codificadas
+        Args:
+            df: DataFrame com features categóricas
+            
+        Returns:
+            DataFrame com features codificadas
     """
     if ConfigKNN.VERBOSE:
-        print("🔤 Codificando features categóricas...")
+        print("\uf15c Codificando features categóricas...")
     
     encoders = {}
     categorical_cols = ['via_expressa', 'regiao', 'sexo']
@@ -166,7 +160,7 @@ def encode_categorical_features(df: pd.DataFrame) -> pd.DataFrame:
             encoders[col] = le
             
             if ConfigKNN.VERBOSE:
-                print(f"  ✓ {col}: {dict(zip(le.classes_, le.transform(le.classes_)))}")
+                print(f"  \uf05d{col}: {dict(zip(le.classes_, le.transform(le.classes_)))}")
     
     if ConfigKNN.VERBOSE:
         print()
@@ -176,62 +170,53 @@ def encode_categorical_features(df: pd.DataFrame) -> pd.DataFrame:
 
 def prepare_data(filepath: str) -> pd.DataFrame:
     """
-    Pipeline completo de preparação de dados.
-    
-    Args:
-        filepath: Caminho do dataset
+        Pipeline completo de preparação de dados.
         
-    Returns:
-        DataFrame preparado
+        Args:
+            filepath: Caminho do dataset
+            
+        Returns:
+            DataFrame preparado
     """
     print("="*80)
-    print("  📊 CARREGAMENTO E PREPARAÇÃO DE DADOS")
+    print("  \ueb03 CARREGAMENTO E PREPARAÇÃO DE DADOS")
     print("="*80)
     
-    # 1. Carrega dados
     df = load_data(filepath, delimiter=ConfigKNN.DELIMITER)
     
-    # 2. Verifica valores ausentes iniciais
-    print(f"📌 Verificando valores ausentes iniciais:")
+    print(f"\ueb2b Verificando valores ausentes iniciais:")
     missing = df.isnull().sum()
     if missing.sum() > 0:
         print(f"  {missing[missing > 0].to_dict()}\n")
     else:
-        print("  ✓ Nenhum valor ausente\n")
+        print("  \uf05dNenhum valor ausente\n")
     
-    # 3. Extrai features temporais
     df = extract_datetime_features(df)
     
-    # 4. Codifica features categóricas
     df = encode_categorical_features(df)
     
-    # 5. Remove duplicatas por agregação se necessário
-    # Nota: seu dataset tem múltiplas linhas por hora (Homens/Mulheres)
-    # Agregamos por data/hora/via/região
-    print("🔀 Agregando dados por data/hora/via/região...")
+    print("\uebab Agregando dados por data/hora/via/região...")
     df_agg = df.groupby(['data', 'hora', 'via_expressa', 'regiao']).agg({
-        'pop_total': 'sum',  # Soma população
-        'tamanho_congestionamento': 'first',  # Congestionamento é igual
+        'pop_total': 'sum', 
+        'tamanho_congestionamento': 'first',  
         'hora_numeric': 'first',
         'dia_semana': 'first',
         'mes': 'first',
         'via_expressa_encoded': 'first',
         'regiao_encoded': 'first',
-        'sexo_encoded': 'mean',  # Média de sexo (para representar proporção)
+        'sexo_encoded': 'mean',
     }).reset_index()
     
-    print(f"  ✓ {len(df)} → {len(df_agg)} linhas\n")
+    print(f"  \uf05d{len(df)} → {len(df_agg)} linhas\n")
     
-    # 6. Verifica valores ausentes finais
-    print(f"📌 Valores ausentes após preparação:")
+    print(f"\ueb2b Valores ausentes após preparação:")
     missing = df_agg.isnull().sum()
     if missing.sum() > 0:
         print(f"  {missing[missing > 0].to_dict()}\n")
     else:
-        print("  ✓ Nenhum valor ausente\n")
+        print("  \uf05d Nenhum valor ausente\n")
     
-    # 7. Estatísticas básicas
-    print(f"📊 Estatísticas do target (tamanho_congestionamento):")
+    print(f"\ueb03 Estatísticas do target (tamanho_congestionamento):")
     print(f"  Mínimo: {df_agg['tamanho_congestionamento'].min()}")
     print(f"  Máximo: {df_agg['tamanho_congestionamento'].max()}")
     print(f"  Média: {df_agg['tamanho_congestionamento'].mean():.2f}")
@@ -241,24 +226,23 @@ def prepare_data(filepath: str) -> pd.DataFrame:
 
 
 # ============================================================================
-# FUNÇÕES DE TREINAMENTO
+# FUNÇÕES DE TREINAMENTO#
 # ============================================================================
 
 def train_knn_holdout(X_train: np.ndarray, X_test: np.ndarray, 
                       y_train: np.ndarray, y_test: np.ndarray) -> dict:
     """
-    Treina KNN com validação holdout (80/20).
-    
-    Args:
-        X_train, X_test: Features de treino/teste (já escaladas)
-        y_train, y_test: Target de treino/teste
+        Treina KNN com validação holdout (80/20).
         
-    Returns:
-        Dicionário com modelo, métricas e dados
+        Args:
+            X_train, X_test: Features de treino/teste (já escaladas)
+            y_train, y_test: Target de treino/teste
+            
+        Returns:
+            Dicionário com modelo, métricas e dados
     """
-    print(f"🤖 Treinando KNN (n_neighbors={ConfigKNN.N_NEIGHBORS})...")
+    print(f" Treinando KNN (n_neighbors={ConfigKNN.N_NEIGHBORS})...")
     
-    # Treina modelo
     model = KNeighborsRegressor(
         n_neighbors=ConfigKNN.N_NEIGHBORS,
         weights=ConfigKNN.WEIGHTS,
@@ -266,11 +250,9 @@ def train_knn_holdout(X_train: np.ndarray, X_test: np.ndarray,
     )
     model.fit(X_train, y_train)
     
-    # Predições
     y_train_pred = model.predict(X_train)
     y_test_pred = model.predict(X_test)
     
-    # Métricas
     metrics = {
         'train_mae': mean_absolute_error(y_train, y_train_pred),
         'test_mae': mean_absolute_error(y_test, y_test_pred),
@@ -294,16 +276,16 @@ def train_knn_holdout(X_train: np.ndarray, X_test: np.ndarray,
 
 def train_knn_kfold(X: np.ndarray, y: np.ndarray) -> dict:
     """
-    Treina KNN com validação cruzada K-Fold.
-    
-    Args:
-        X: Features (já escaladas)
-        y: Target
+        Treina KNN com validação cruzada K-Fold.
         
-    Returns:
-        Dicionário com scores e estatísticas
+        Args:
+            X: Features (já escaladas)
+            y: Target
+            
+        Returns:
+            Dicionário com scores e estatísticas
     """
-    print(f"🤖 Treinando KNN com {ConfigKNN.KFOLD_N_SPLITS}-Fold CV...")
+    print(f" Treinando KNN com {ConfigKNN.KFOLD_N_SPLITS}-Fold CV...")
     
     model = KNeighborsRegressor(
         n_neighbors=ConfigKNN.N_NEIGHBORS,
@@ -315,7 +297,6 @@ def train_knn_kfold(X: np.ndarray, y: np.ndarray) -> dict:
                   shuffle=True, 
                   random_state=ConfigKNN.RANDOM_STATE)
     
-    # Calcula scores
     scores_r2 = cross_val_score(model, X, y, cv=kfold, scoring='r2')
     scores_mae = cross_val_score(model, X, y, cv=kfold, 
                                  scoring='neg_mean_absolute_error')
@@ -325,7 +306,7 @@ def train_knn_kfold(X: np.ndarray, y: np.ndarray) -> dict:
         'X': X,
         'y': y,
         'cv_r2_scores': scores_r2,
-        'cv_mae_scores': -scores_mae,  # Nega porque sklearn retorna negativo
+        'cv_mae_scores': -scores_mae,  
         'cv_r2_mean': scores_r2.mean(),
         'cv_r2_std': scores_r2.std(),
         'cv_mae_mean': -scores_mae.mean(),
@@ -335,48 +316,43 @@ def train_knn_kfold(X: np.ndarray, y: np.ndarray) -> dict:
 
 def train_model(df: pd.DataFrame) -> dict:
     """
-    Pipeline de treinamento adaptado à estratégia de validação.
-    
-    Args:
-        df: DataFrame preparado
+        Pipeline de treinamento adaptado à estratégia de validação.
         
-    Returns:
-        Resultados do treinamento
+        Args:
+            df: DataFrame preparado
+            
+        Returns:
+            Resultados do treinamento
     """
     print("="*80)
-    print("  🤖 TREINAMENTO DO MODELO")
+    print("   TREINAMENTO DO MODELO")
     print("="*80)
     
-    # Verifica features disponíveis
     missing_features = [f for f in ConfigKNN.FEATURES if f not in df.columns]
     if missing_features:
-        print(f"❌ Features não encontradas: {missing_features}")
+        print(f"\uea87 Features não encontradas: {missing_features}")
         print(f"   Colunas disponíveis: {list(df.columns)}")
         raise ValueError("Features faltando no dataset")
     
-    # Remove NaN
     df_clean = df.dropna(subset=ConfigKNN.FEATURES + [ConfigKNN.TARGET])
-    print(f"✓ Dados limpos: {len(df)} → {len(df_clean)} linhas\n")
+    print(f"\uf05d Dados limpos: {len(df)} → {len(df_clean)} linhas\n")
     
-    # Separa features e target
     X = df_clean[ConfigKNN.FEATURES].values
     y = df_clean[ConfigKNN.TARGET].values
     
-    # Normaliza features
-    print("📏 Normalizando features...")
+    print(" Normalizando features...")
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
-    print(f"  ✓ Média: {X_scaled.mean(axis=0)}")
-    print(f"  ✓ Std: {X_scaled.std(axis=0)}\n")
+    print(f"  \uf05d Média: {X_scaled.mean(axis=0)}")
+    print(f"  \uf05d Std: {X_scaled.std(axis=0)}\n")
     
-    # Treina conforme estratégia
     if ConfigKNN.VALIDATION_STRATEGY == 'holdout':
         X_train, X_test, y_train, y_test = train_test_split(
             X_scaled, y,
             test_size=ConfigKNN.HOLDOUT_TEST_SIZE,
             random_state=ConfigKNN.RANDOM_STATE
         )
-        print(f"✓ Split: {len(X_train)} treino | {len(X_test)} teste\n")
+        print(f"\uf05d Split: {len(X_train)} treino | {len(X_test)} teste\n")
         
         results = train_knn_holdout(X_train, X_test, y_train, y_test)
         
@@ -386,7 +362,6 @@ def train_model(df: pd.DataFrame) -> dict:
     else:
         raise ValueError(f"Estratégia desconhecida: {ConfigKNN.VALIDATION_STRATEGY}")
     
-    # Adiciona scaler e features aos resultados
     results['scaler'] = scaler
     results['features'] = ConfigKNN.FEATURES
     results['df'] = df_clean
@@ -397,7 +372,7 @@ def train_model(df: pd.DataFrame) -> dict:
 def print_metrics(results: dict) -> None:
     """Imprime métricas de forma formatada."""
     print("\n" + "="*80)
-    print("  📊 MÉTRICAS DO MODELO")
+    print("  \ueb03 MÉTRICAS DO MODELO")
     print("="*80)
     
     if ConfigKNN.VALIDATION_STRATEGY == 'holdout':
@@ -417,7 +392,6 @@ def print_metrics(results: dict) -> None:
     
     print()
 
-
 # ============================================================================
 # FUNÇÕES DE VISUALIZAÇÃO
 # ============================================================================
@@ -429,7 +403,6 @@ def plot_results_holdout(results: dict) -> None:
     
     fig, axes = plt.subplots(2, 2, figsize=(14, 10))
     
-    # Gráfico 1: Real vs Previsto (Teste)
     ax = axes[0, 0]
     ax.scatter(results['y_test'], results['y_test_pred'], 
                alpha=0.5, s=20, edgecolors='k', linewidth=0.5)
@@ -444,7 +417,6 @@ def plot_results_holdout(results: dict) -> None:
     ax.text(0.05, 0.95, textstr, transform=ax.transAxes, verticalalignment='top',
             bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
     
-    # Gráfico 2: Real vs Previsto (Treino)
     ax = axes[0, 1]
     ax.scatter(results['y_train'], results['y_train_pred'], 
                alpha=0.5, s=20, edgecolors='k', linewidth=0.5)
@@ -459,7 +431,6 @@ def plot_results_holdout(results: dict) -> None:
     ax.text(0.05, 0.95, textstr, transform=ax.transAxes, verticalalignment='top',
             bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
     
-    # Gráfico 3: Distribuição de erros (Teste)
     ax = axes[1, 0]
     errors = results['y_test'] - results['y_test_pred']
     ax.hist(errors, bins=50, edgecolor='black', alpha=0.7, color='skyblue')
@@ -469,7 +440,6 @@ def plot_results_holdout(results: dict) -> None:
     ax.set_title(f'Distribuição de Erros (Teste) - Média: {errors.mean():.2f}')
     ax.grid(True, alpha=0.3)
     
-    # Gráfico 4: Residuais vs Previstos
     ax = axes[1, 1]
     residuals = results['y_test'] - results['y_test_pred']
     ax.scatter(results['y_test_pred'], residuals, alpha=0.5, s=20, edgecolors='k', linewidth=0.5)
@@ -481,7 +451,7 @@ def plot_results_holdout(results: dict) -> None:
     
     plt.tight_layout()
     plt.savefig('knn_results_holdout.png', dpi=150, bbox_inches='tight')
-    print("✓ Gráfico salvo: knn_results_holdout.png")
+    print("\uf05dGráfico salvo: knn_results_holdout.png")
     plt.show()
 
 
@@ -492,7 +462,6 @@ def plot_results_kfold(results: dict) -> None:
     
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     
-    # Gráfico 1: Scores R²
     ax = axes[0]
     folds = np.arange(1, len(results['cv_r2_scores']) + 1)
     ax.bar(folds, results['cv_r2_scores'], alpha=0.7, color='skyblue', edgecolor='black')
@@ -508,7 +477,6 @@ def plot_results_kfold(results: dict) -> None:
     ax.grid(True, alpha=0.3, axis='y')
     ax.legend()
     
-    # Gráfico 2: Scores MAE
     ax = axes[1]
     ax.bar(folds, results['cv_mae_scores'], alpha=0.7, color='lightcoral', edgecolor='black')
     ax.axhline(y=results['cv_mae_mean'], color='r', linestyle='--', linewidth=2, label='Média')
@@ -524,9 +492,8 @@ def plot_results_kfold(results: dict) -> None:
     
     plt.tight_layout()
     plt.savefig('knn_results_kfold.png', dpi=150, bbox_inches='tight')
-    print("✓ Gráfico salvo: knn_results_kfold.png")
+    print("\uf05dGráfico salvo: knn_results_kfold.png")
     plt.show()
-
 
 # ============================================================================
 # FUNÇÕES SHAP
@@ -536,46 +503,40 @@ def explain_with_shap(results: dict) -> None:
     """Análise de explicabilidade com SHAP (holdout only)."""
     if not ConfigKNN.SHAP_ENABLED or not HAS_SHAP:
         if ConfigKNN.VERBOSE:
-            print("⚠️  SHAP desabilitado ou não disponível")
+            print("\uea6c  SHAP desabilitado ou não disponível")
         return
     
     if ConfigKNN.VALIDATION_STRATEGY != 'holdout':
-        print("⚠️  SHAP disponível apenas para validação holdout")
+        print("\uea6c  SHAP disponível apenas para validação holdout")
         return
     
     print("\n" + "="*80)
-    print("  🔍 ANÁLISE SHAP")
+    print("   ANÁLISE SHAP")
     print("="*80)
     print(f"Executando SHAP com {ConfigKNN.SHAP_N_SAMPLES} amostras...")
     
-    # Limita amostras
     n_samples = min(ConfigKNN.SHAP_N_SAMPLES, len(results['X_train']))
     X_sample = results['X_train'][:n_samples]
     X_test_sample = results['X_test'][:min(100, len(results['X_test']))]
     
-    # Cria explicador
     explainer = shap.KernelExplainer(results['model'].predict, X_sample)
     shap_values = explainer.shap_values(X_test_sample)
     
-    print("✓ SHAP values calculados\n")
+    print("\uf05dSHAP values calculados\n")
     
-    # Visualizações
     fig, axes = plt.subplots(2, 2, figsize=(16, 12))
     
-    # 1. Summary plot (scatter)
     plt.sca(axes[0, 0])
     shap.summary_plot(shap_values, X_test_sample, 
                       feature_names=results['features'], show=False)
     axes[0, 0].set_title('Importância Global (SHAP)', fontweight='bold', fontsize=12)
     
-    # 2. Summary plot (bar)
     plt.sca(axes[0, 1])
     shap.summary_plot(shap_values, X_test_sample, 
                       feature_names=results['features'], 
                       plot_type="bar", show=False)
     axes[0, 1].set_title('Importância Média Absoluta', fontweight='bold', fontsize=12)
     
-    # 3. Dependence plot
     mean_abs_shap = np.abs(shap_values).mean(axis=0)
     top_idx = np.argmax(mean_abs_shap)
     
@@ -583,7 +544,6 @@ def explain_with_shap(results: dict) -> None:
     shap.dependence_plot(top_idx, shap_values, X_test_sample,
                          feature_names=results['features'], ax=axes[1, 0], show=False)
     
-    # 4. Ranking
     axes[1, 1].axis('off')
     importance_df = pd.DataFrame({
         'Feature': results['features'],
@@ -600,9 +560,8 @@ def explain_with_shap(results: dict) -> None:
     
     plt.tight_layout()
     plt.savefig('knn_shap_analysis.png', dpi=150, bbox_inches='tight')
-    print("✓ Gráfico salvo: knn_shap_analysis.png\n")
+    print("\uf05dGráfico salvo: knn_shap_analysis.png\n")
     plt.show()
-
 
 # ============================================================================
 # FUNÇÃO PRINCIPAL
@@ -617,7 +576,7 @@ def main():
     print("║" + " "*78 + "║")
     print("╚" + "="*78 + "╝")
     
-    print(f"\n📋 CONFIGURAÇÕES:")
+    print(f"\n\ued7b CONFIGURAÇÕES:")
     print(f"   Dataset: {ConfigKNN.DATASET_PATH}")
     print(f"   Features: {ConfigKNN.FEATURES}")
     print(f"   Target: {ConfigKNN.TARGET}")
@@ -630,34 +589,28 @@ def main():
     print(f"   SHAP: {'Habilitado' if ConfigKNN.SHAP_ENABLED else 'Desabilitado'}\n")
     
     try:
-        # 1. Preparação
         df = prepare_data(ConfigKNN.DATASET_PATH)
         
-        # 2. Treinamento
         results = train_model(df)
         
-        # 3. Métricas
         print_metrics(results)
         
-        # 4. Visualizações
         if ConfigKNN.VALIDATION_STRATEGY == 'holdout':
             plot_results_holdout(results)
         else:
             plot_results_kfold(results)
         
-        # 5. SHAP
         explain_with_shap(results)
         
-        # 6. Salva resultados
         if ConfigKNN.SAVE_RESULTS:
             save_results(results, ConfigKNN.RESULTS_FILE)
         
         print("\n" + "="*80)
-        print("  ✅ PIPELINE CONCLUÍDO COM SUCESSO!")
+        print("  \uf058 PIPELINE CONCLUÍDO COM SUCESSO!")
         print("="*80 + "\n")
         
     except Exception as e:
-        print(f"\n❌ ERRO: {str(e)}")
+        print(f"\n\uea87 ERRO: {str(e)}")
         raise
 
 
@@ -687,8 +640,8 @@ def save_results(results: dict, filename: str) -> None:
     with open(filename, 'w') as f:
         json.dump(results_to_save, f, indent=2)
     
-    print(f"✓ Resultados salvos: {filename}")
+    print(f"\uf05d Resultados salvos: {filename}")
 
 
 if __name__ == '__main__':
-    main()
+    main()    

@@ -303,9 +303,9 @@ def print_success(message: str, value: Optional[str] = None) -> None:
             value: Valor opcional a ser exibido após a mensagem.
     """
     if value:
-        print(f"   ✓ {message}: {value}")
+        print(f"   \uf05d{message}: {value}")
     else:
-        print(f"   ✓ {message}")
+        print(f"   \uf05d{message}")
 
 
 def print_warning(message: str) -> None:
@@ -366,7 +366,7 @@ def generate_statistical_report(dataframe: pd.DataFrame) -> None:
     unmapped_records = dataframe["region"].isna().sum()
 
     print(f"\n🗺️  Status de mapeamento de regiões:")
-    print(f"   ✓ Mapeado: {mapped_records:,} "
+    print(f"   \uf05dMapeado: {mapped_records:,} "
           f"({mapped_records/total_records*100:.1f}%)")
 
     if unmapped_records > 0:
@@ -514,7 +514,7 @@ def main() -> None:
         print_warning(f"Erro ao salvar arquivo: {e}")
         return
 
-    print_header("✓ PROCESSAMENTO CONCLUÍDO COM SUCESSO!")
+    print_header("\uf05dPROCESSAMENTO CONCLUÍDO COM SUCESSO!")
 
     generate_statistical_report(dataframe)
 

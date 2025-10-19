@@ -59,7 +59,7 @@ def info(msg: str):
     print(f"ⓘ {msg}")
 
 def ok(msg: str):
-    print(f"✓ {msg}")
+    print(f"\uf05d{msg}")
 
 def warn(msg: str):
     print(f"⚠ {msg}")

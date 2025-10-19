@@ -232,9 +232,9 @@ def print_success(message: str, value: Optional[str] = None) -> None:
             value: Valor opcional a ser exibido após a mensagem.
     """
     if value:
-        print(f"   ✓ {message}: {value}")
+        print(f"   \uf05d{message}: {value}")
     else:
-        print(f"   ✓ {message}")
+        print(f"   \uf05d{message}")
 
 
 def print_warning(message: str) -> None:
