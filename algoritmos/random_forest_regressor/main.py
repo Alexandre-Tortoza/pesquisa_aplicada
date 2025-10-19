@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Previsão de Congestionamento de Trânsito usando KNN
+Previsão de Congestionamento de Trânsito usando Random Forest Regressor
 
 Pipeline modular para prever tamanho_congestionamento baseado em população
 e outras features. Suporta validação cruzada, holdout e análise SHAP.
@@ -13,7 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.neighbors import KNeighborsRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import warnings
 import json
@@ -32,7 +32,7 @@ warnings.filterwarnings('ignore')
 # CONFIGURAÇÕES GLOBAIS - ALTERE CONFORME NECESSÁRIO
 # ============================================================================
 
-class ConfigKNN:
+class ConfigRandomForest:
     """Centraliza todas as configurações do experimento."""
     
     # 📁 Caminhos
@@ -46,10 +46,14 @@ class ConfigKNN:
     KFOLD_N_SPLITS = 5  # Número de folds para validação cruzada
     RANDOM_STATE = 42
     
-    # 🤖 Hiperparâmetros do KNN
-    N_NEIGHBORS = 5  # Número de vizinhos
-    WEIGHTS = 'distance'  # 'uniform' ou 'distance'
-    METRIC = 'minkowski'  # Métrica de distância
+    # 🌲 Hiperparâmetros do Random Forest
+    N_ESTIMATORS = 100  # Número de árvores (maior = melhor mas mais lento)
+    MAX_DEPTH = None  # Profundidade máxima (None = sem limite)
+    MIN_SAMPLES_SPLIT = 2  # Mínimo de amostras para dividir nó
+    MIN_SAMPLES_LEAF = 1  # Mínimo de amostras em folha
+    MAX_FEATURES = 'sqrt'  # Recurso ao dividir ('sqrt', 'log2' ou None)
+    BOOTSTRAP = True  # Usar bootstrap
+    N_JOBS = -1  # Usar todos os cores (-1 = all cores)
     
     # 📊 Features e Target
     FEATURES = [
@@ -70,11 +74,12 @@ class ConfigKNN:
     # 📈 Visualizações
     PLOT_RESULTS = True
     PLOT_SHAP = True
+    PLOT_FEATURE_IMPORTANCE = True  # Plot importância das features
     
     # 📝 Logs
     VERBOSE = True
     SAVE_RESULTS = True
-    RESULTS_FILE = f"resultados_knn_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    RESULTS_FILE = f"resultados_rf_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
 
 
 # ============================================================================
@@ -97,7 +102,7 @@ def load_data(filepath: str, delimiter: str = ";") -> pd.DataFrame:
         for encoding in ['utf-8', 'latin-1', 'iso-8859-1']:
             try:
                 df = pd.read_csv(filepath, delimiter=delimiter, encoding=encoding)
-                if ConfigKNN.VERBOSE:
+                if ConfigRandomForest.VERBOSE:
                     print(f"✓ Dataset carregado: {df.shape}")
                     print(f"  Encoding: {encoding}")
                     print(f"  Colunas: {list(df.columns)}\n")
@@ -122,7 +127,7 @@ def extract_datetime_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         DataFrame com novas colunas de features temporais
     """
-    if ConfigKNN.VERBOSE:
+    if ConfigRandomForest.VERBOSE:
         print("🕐 Extraindo features temporais...")
     
     # Combina data e hora
@@ -137,7 +142,7 @@ def extract_datetime_features(df: pd.DataFrame) -> pd.DataFrame:
     df['mes'] = df['datetime'].dt.month
     df['dia_mes'] = df['datetime'].dt.day
     
-    if ConfigKNN.VERBOSE:
+    if ConfigRandomForest.VERBOSE:
         print("  ✓ Features: hora_numeric, dia_semana, mes, dia_mes\n")
     
     return df
@@ -153,7 +158,7 @@ def encode_categorical_features(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         DataFrame com features codificadas
     """
-    if ConfigKNN.VERBOSE:
+    if ConfigRandomForest.VERBOSE:
         print("🔤 Codificando features categóricas...")
     
     encoders = {}
@@ -165,10 +170,10 @@ def encode_categorical_features(df: pd.DataFrame) -> pd.DataFrame:
             df[f'{col}_encoded'] = le.fit_transform(df[col].fillna('Unknown'))
             encoders[col] = le
             
-            if ConfigKNN.VERBOSE:
+            if ConfigRandomForest.VERBOSE:
                 print(f"  ✓ {col}: {dict(zip(le.classes_, le.transform(le.classes_)))}")
     
-    if ConfigKNN.VERBOSE:
+    if ConfigRandomForest.VERBOSE:
         print()
     
     return df
@@ -189,7 +194,7 @@ def prepare_data(filepath: str) -> pd.DataFrame:
     print("="*80)
     
     # 1. Carrega dados
-    df = load_data(filepath, delimiter=ConfigKNN.DELIMITER)
+    df = load_data(filepath, delimiter=ConfigRandomForest.DELIMITER)
     
     # 2. Verifica valores ausentes iniciais
     print(f"📌 Verificando valores ausentes iniciais:")
@@ -205,7 +210,7 @@ def prepare_data(filepath: str) -> pd.DataFrame:
     # 4. Codifica features categóricas
     df = encode_categorical_features(df)
     
-    # 5. Remove duplicatas por agregação se necessário
+    # 5. Agregação de dados
     # Nota: seu dataset tem múltiplas linhas por hora (Homens/Mulheres)
     # Agregamos por data/hora/via/região
     print("🔀 Agregando dados por data/hora/via/região...")
@@ -244,25 +249,35 @@ def prepare_data(filepath: str) -> pd.DataFrame:
 # FUNÇÕES DE TREINAMENTO
 # ============================================================================
 
-def train_knn_holdout(X_train: np.ndarray, X_test: np.ndarray, 
-                      y_train: np.ndarray, y_test: np.ndarray) -> dict:
+def train_rf_holdout(X_train: np.ndarray, X_test: np.ndarray, 
+                     y_train: np.ndarray, y_test: np.ndarray,
+                     feature_names: list) -> dict:
     """
-    Treina KNN com validação holdout (80/20).
+    Treina Random Forest com validação holdout (80/20).
+    
+    Nota: Random Forest não requer normalização de features!
     
     Args:
-        X_train, X_test: Features de treino/teste (já escaladas)
+        X_train, X_test: Features de treino/teste (sem escala necessária)
         y_train, y_test: Target de treino/teste
+        feature_names: Nomes das features
         
     Returns:
         Dicionário com modelo, métricas e dados
     """
-    print(f"🤖 Treinando KNN (n_neighbors={ConfigKNN.N_NEIGHBORS})...")
+    print(f"🌲 Treinando Random Forest (n_estimators={ConfigRandomForest.N_ESTIMATORS})...")
     
     # Treina modelo
-    model = KNeighborsRegressor(
-        n_neighbors=ConfigKNN.N_NEIGHBORS,
-        weights=ConfigKNN.WEIGHTS,
-        metric=ConfigKNN.METRIC
+    model = RandomForestRegressor(
+        n_estimators=ConfigRandomForest.N_ESTIMATORS,
+        max_depth=ConfigRandomForest.MAX_DEPTH,
+        min_samples_split=ConfigRandomForest.MIN_SAMPLES_SPLIT,
+        min_samples_leaf=ConfigRandomForest.MIN_SAMPLES_LEAF,
+        max_features=ConfigRandomForest.MAX_FEATURES,
+        bootstrap=ConfigRandomForest.BOOTSTRAP,
+        n_jobs=ConfigRandomForest.N_JOBS,
+        random_state=ConfigRandomForest.RANDOM_STATE,
+        verbose=0
     )
     model.fit(X_train, y_train)
     
@@ -280,6 +295,12 @@ def train_knn_holdout(X_train: np.ndarray, X_test: np.ndarray,
         'test_r2': r2_score(y_test, y_test_pred),
     }
     
+    # Feature importance
+    feature_importance = pd.DataFrame({
+        'Feature': feature_names,
+        'Importance': model.feature_importances_
+    }).sort_values('Importance', ascending=False)
+    
     return {
         'model': model,
         'X_train': X_train,
@@ -289,36 +310,52 @@ def train_knn_holdout(X_train: np.ndarray, X_test: np.ndarray,
         'y_train_pred': y_train_pred,
         'y_test_pred': y_test_pred,
         'metrics': metrics,
+        'feature_importance': feature_importance,
     }
 
 
-def train_knn_kfold(X: np.ndarray, y: np.ndarray) -> dict:
+def train_rf_kfold(X: np.ndarray, y: np.ndarray, 
+                   feature_names: list) -> dict:
     """
-    Treina KNN com validação cruzada K-Fold.
+    Treina Random Forest com validação cruzada K-Fold.
     
     Args:
-        X: Features (já escaladas)
+        X: Features (sem escala necessária)
         y: Target
+        feature_names: Nomes das features
         
     Returns:
         Dicionário com scores e estatísticas
     """
-    print(f"🤖 Treinando KNN com {ConfigKNN.KFOLD_N_SPLITS}-Fold CV...")
+    print(f"🌲 Treinando Random Forest com {ConfigRandomForest.KFOLD_N_SPLITS}-Fold CV...")
     
-    model = KNeighborsRegressor(
-        n_neighbors=ConfigKNN.N_NEIGHBORS,
-        weights=ConfigKNN.WEIGHTS,
-        metric=ConfigKNN.METRIC
+    model = RandomForestRegressor(
+        n_estimators=ConfigRandomForest.N_ESTIMATORS,
+        max_depth=ConfigRandomForest.MAX_DEPTH,
+        min_samples_split=ConfigRandomForest.MIN_SAMPLES_SPLIT,
+        min_samples_leaf=ConfigRandomForest.MIN_SAMPLES_LEAF,
+        max_features=ConfigRandomForest.MAX_FEATURES,
+        bootstrap=ConfigRandomForest.BOOTSTRAP,
+        n_jobs=ConfigRandomForest.N_JOBS,
+        random_state=ConfigRandomForest.RANDOM_STATE,
+        verbose=0
     )
     
-    kfold = KFold(n_splits=ConfigKNN.KFOLD_N_SPLITS, 
+    kfold = KFold(n_splits=ConfigRandomForest.KFOLD_N_SPLITS, 
                   shuffle=True, 
-                  random_state=ConfigKNN.RANDOM_STATE)
+                  random_state=ConfigRandomForest.RANDOM_STATE)
     
     # Calcula scores
     scores_r2 = cross_val_score(model, X, y, cv=kfold, scoring='r2')
     scores_mae = cross_val_score(model, X, y, cv=kfold, 
                                  scoring='neg_mean_absolute_error')
+    
+    # Treina modelo final para feature importance
+    model.fit(X, y)
+    feature_importance = pd.DataFrame({
+        'Feature': feature_names,
+        'Importance': model.feature_importances_
+    }).sort_values('Importance', ascending=False)
     
     return {
         'model': model,
@@ -330,12 +367,15 @@ def train_knn_kfold(X: np.ndarray, y: np.ndarray) -> dict:
         'cv_r2_std': scores_r2.std(),
         'cv_mae_mean': -scores_mae.mean(),
         'cv_mae_std': scores_mae.std(),
+        'feature_importance': feature_importance,
     }
 
 
 def train_model(df: pd.DataFrame) -> dict:
     """
     Pipeline de treinamento adaptado à estratégia de validação.
+    
+    Nota: Random Forest não necessita de normalização!
     
     Args:
         df: DataFrame preparado
@@ -344,51 +384,47 @@ def train_model(df: pd.DataFrame) -> dict:
         Resultados do treinamento
     """
     print("="*80)
-    print("  🤖 TREINAMENTO DO MODELO")
+    print("  🌲 TREINAMENTO DO MODELO - RANDOM FOREST")
     print("="*80)
     
     # Verifica features disponíveis
-    missing_features = [f for f in ConfigKNN.FEATURES if f not in df.columns]
+    missing_features = [f for f in ConfigRandomForest.FEATURES if f not in df.columns]
     if missing_features:
         print(f"❌ Features não encontradas: {missing_features}")
         print(f"   Colunas disponíveis: {list(df.columns)}")
         raise ValueError("Features faltando no dataset")
     
     # Remove NaN
-    df_clean = df.dropna(subset=ConfigKNN.FEATURES + [ConfigKNN.TARGET])
-    print(f"✓ Dados limpos: {len(df)} → {len(df_clean)} linhas\n")
+    df_clean = df.dropna(subset=ConfigRandomForest.FEATURES + [ConfigRandomForest.TARGET])
+    print(f"✓ Dados limpos: {len(df)} → {len(df_clean)} linhas")
+    print(f"  Proporção mantida: {len(df_clean)/len(df)*100:.2f}%\n")
     
     # Separa features e target
-    X = df_clean[ConfigKNN.FEATURES].values
-    y = df_clean[ConfigKNN.TARGET].values
+    X = df_clean[ConfigRandomForest.FEATURES].values
+    y = df_clean[ConfigRandomForest.TARGET].values
     
-    # Normaliza features
-    print("📏 Normalizando features...")
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-    print(f"  ✓ Média: {X_scaled.mean(axis=0)}")
-    print(f"  ✓ Std: {X_scaled.std(axis=0)}\n")
+    print("⚠️  Random Forest não necessita normalização (trabalha com árvores)\n")
     
     # Treina conforme estratégia
-    if ConfigKNN.VALIDATION_STRATEGY == 'holdout':
+    if ConfigRandomForest.VALIDATION_STRATEGY == 'holdout':
         X_train, X_test, y_train, y_test = train_test_split(
-            X_scaled, y,
-            test_size=ConfigKNN.HOLDOUT_TEST_SIZE,
-            random_state=ConfigKNN.RANDOM_STATE
+            X, y,
+            test_size=ConfigRandomForest.HOLDOUT_TEST_SIZE,
+            random_state=ConfigRandomForest.RANDOM_STATE
         )
         print(f"✓ Split: {len(X_train)} treino | {len(X_test)} teste\n")
         
-        results = train_knn_holdout(X_train, X_test, y_train, y_test)
+        results = train_rf_holdout(X_train, X_test, y_train, y_test, 
+                                   ConfigRandomForest.FEATURES)
         
-    elif ConfigKNN.VALIDATION_STRATEGY == 'kfold':
-        results = train_knn_kfold(X_scaled, y)
+    elif ConfigRandomForest.VALIDATION_STRATEGY == 'kfold':
+        results = train_rf_kfold(X, y, ConfigRandomForest.FEATURES)
     
     else:
-        raise ValueError(f"Estratégia desconhecida: {ConfigKNN.VALIDATION_STRATEGY}")
+        raise ValueError(f"Estratégia desconhecida: {ConfigRandomForest.VALIDATION_STRATEGY}")
     
-    # Adiciona scaler e features aos resultados
-    results['scaler'] = scaler
-    results['features'] = ConfigKNN.FEATURES
+    # Adiciona informações adicionais
+    results['features'] = ConfigRandomForest.FEATURES
     results['df'] = df_clean
     
     return results
@@ -397,10 +433,10 @@ def train_model(df: pd.DataFrame) -> dict:
 def print_metrics(results: dict) -> None:
     """Imprime métricas de forma formatada."""
     print("\n" + "="*80)
-    print("  📊 MÉTRICAS DO MODELO")
+    print("  📊 MÉTRICAS DO MODELO - RANDOM FOREST")
     print("="*80)
     
-    if ConfigKNN.VALIDATION_STRATEGY == 'holdout':
+    if ConfigRandomForest.VALIDATION_STRATEGY == 'holdout':
         metrics = results['metrics']
         print(f"\n{'Métrica':<25} {'Treino':>12} {'Teste':>12}")
         print("-" * 50)
@@ -408,12 +444,18 @@ def print_metrics(results: dict) -> None:
         print(f"{'RMSE':<25} {metrics['train_rmse']:>12.4f} {metrics['test_rmse']:>12.4f}")
         print(f"{'R² Score':<25} {metrics['train_r2']:>12.4f} {metrics['test_r2']:>12.4f}")
         
-    elif ConfigKNN.VALIDATION_STRATEGY == 'kfold':
-        print(f"\n5-Fold Cross Validation:")
+    elif ConfigRandomForest.VALIDATION_STRATEGY == 'kfold':
+        print(f"\n{ConfigRandomForest.KFOLD_N_SPLITS}-Fold Cross Validation:")
         print("-" * 50)
         print(f"R² Scores: {results['cv_r2_scores']}")
         print(f"R² Média: {results['cv_r2_mean']:.4f} (+/- {results['cv_r2_std']:.4f})")
         print(f"MAE Média: {results['cv_mae_mean']:.4f} (+/- {results['cv_mae_std']:.4f})")
+    
+    print(f"\n{'Feature Importance':<25}")
+    print("-" * 50)
+    for idx, row in results['feature_importance'].head(7).iterrows():
+        bar = "█" * int(row['Importance'] * 50)
+        print(f"{row['Feature']:<25} {bar} {row['Importance']:.4f}")
     
     print()
 
@@ -424,7 +466,7 @@ def print_metrics(results: dict) -> None:
 
 def plot_results_holdout(results: dict) -> None:
     """Plota resultados para validação holdout."""
-    if not ConfigKNN.PLOT_RESULTS:
+    if not ConfigRandomForest.PLOT_RESULTS:
         return
     
     fig, axes = plt.subplots(2, 2, figsize=(14, 10))
@@ -469,7 +511,7 @@ def plot_results_holdout(results: dict) -> None:
     ax.set_title(f'Distribuição de Erros (Teste) - Média: {errors.mean():.2f}')
     ax.grid(True, alpha=0.3)
     
-    # Gráfico 4: Residuais vs Previstos
+    # Gráfico 4: Resíduos vs Previstos
     ax = axes[1, 1]
     residuals = results['y_test'] - results['y_test_pred']
     ax.scatter(results['y_test_pred'], residuals, alpha=0.5, s=20, edgecolors='k', linewidth=0.5)
@@ -480,14 +522,14 @@ def plot_results_holdout(results: dict) -> None:
     ax.grid(True, alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('knn_results_holdout.png', dpi=150, bbox_inches='tight')
-    print("✓ Gráfico salvo: knn_results_holdout.png")
+    plt.savefig('rf_results_holdout.png', dpi=150, bbox_inches='tight')
+    print("✓ Gráfico salvo: rf_results_holdout.png")
     plt.show()
 
 
 def plot_results_kfold(results: dict) -> None:
     """Plota resultados para validação K-Fold."""
-    if not ConfigKNN.PLOT_RESULTS:
+    if not ConfigRandomForest.PLOT_RESULTS:
         return
     
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
@@ -503,7 +545,7 @@ def plot_results_kfold(results: dict) -> None:
                      alpha=0.2, color='r')
     ax.set_xlabel('Fold')
     ax.set_ylabel('R² Score')
-    ax.set_title('Scores R² por Fold')
+    ax.set_title('Scores R² por Fold - Random Forest')
     ax.set_ylim([0, 1])
     ax.grid(True, alpha=0.3, axis='y')
     ax.legend()
@@ -518,13 +560,40 @@ def plot_results_kfold(results: dict) -> None:
                      alpha=0.2, color='r')
     ax.set_xlabel('Fold')
     ax.set_ylabel('MAE')
-    ax.set_title('Scores MAE por Fold')
+    ax.set_title('Scores MAE por Fold - Random Forest')
     ax.grid(True, alpha=0.3, axis='y')
     ax.legend()
     
     plt.tight_layout()
-    plt.savefig('knn_results_kfold.png', dpi=150, bbox_inches='tight')
-    print("✓ Gráfico salvo: knn_results_kfold.png")
+    plt.savefig('rf_results_kfold.png', dpi=150, bbox_inches='tight')
+    print("✓ Gráfico salvo: rf_results_kfold.png")
+    plt.show()
+
+
+def plot_feature_importance(results: dict) -> None:
+    """Plota importância das features."""
+    if not ConfigRandomForest.PLOT_FEATURE_IMPORTANCE:
+        return
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    importance_df = results['feature_importance'].head(10)
+    colors = plt.cm.viridis(np.linspace(0, 1, len(importance_df)))
+    
+    ax.barh(importance_df['Feature'], importance_df['Importance'], color=colors, edgecolor='black')
+    ax.set_xlabel('Importância (Gini)', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Feature', fontsize=12, fontweight='bold')
+    ax.set_title('Feature Importance - Random Forest', fontsize=14, fontweight='bold')
+    ax.grid(True, alpha=0.3, axis='x')
+    
+    # Adiciona valores nas barras
+    for i, (feature, importance) in enumerate(zip(importance_df['Feature'], 
+                                                   importance_df['Importance'])):
+        ax.text(importance, i, f' {importance:.4f}', va='center', fontsize=9)
+    
+    plt.tight_layout()
+    plt.savefig('rf_feature_importance.png', dpi=150, bbox_inches='tight')
+    print("✓ Gráfico salvo: rf_feature_importance.png")
     plt.show()
 
 
@@ -534,27 +603,26 @@ def plot_results_kfold(results: dict) -> None:
 
 def explain_with_shap(results: dict) -> None:
     """Análise de explicabilidade com SHAP (holdout only)."""
-    if not ConfigKNN.SHAP_ENABLED or not HAS_SHAP:
-        if ConfigKNN.VERBOSE:
+    if not ConfigRandomForest.SHAP_ENABLED or not HAS_SHAP:
+        if ConfigRandomForest.VERBOSE:
             print("⚠️  SHAP desabilitado ou não disponível")
         return
     
-    if ConfigKNN.VALIDATION_STRATEGY != 'holdout':
+    if ConfigRandomForest.VALIDATION_STRATEGY != 'holdout':
         print("⚠️  SHAP disponível apenas para validação holdout")
         return
     
     print("\n" + "="*80)
-    print("  🔍 ANÁLISE SHAP")
+    print("  🔍 ANÁLISE SHAP - RANDOM FOREST")
     print("="*80)
-    print(f"Executando SHAP com {ConfigKNN.SHAP_N_SAMPLES} amostras...")
+    print(f"Executando SHAP com {ConfigRandomForest.SHAP_N_SAMPLES} amostras...")
     
-    # Limita amostras
-    n_samples = min(ConfigKNN.SHAP_N_SAMPLES, len(results['X_train']))
-    X_sample = results['X_train'][:n_samples]
-    X_test_sample = results['X_test'][:min(100, len(results['X_test']))]
+    # Usa TreeExplainer para Random Forest (muito mais rápido)
+    explainer = shap.TreeExplainer(results['model'])
     
-    # Cria explicador
-    explainer = shap.KernelExplainer(results['model'].predict, X_sample)
+    # Calcula SHAP values para amostra do teste
+    n_samples = min(ConfigRandomForest.SHAP_N_SAMPLES, len(results['X_test']))
+    X_test_sample = results['X_test'][:n_samples]
     shap_values = explainer.shap_values(X_test_sample)
     
     print("✓ SHAP values calculados\n")
@@ -599,8 +667,8 @@ def explain_with_shap(results: dict) -> None:
                     bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.3))
     
     plt.tight_layout()
-    plt.savefig('knn_shap_analysis.png', dpi=150, bbox_inches='tight')
-    print("✓ Gráfico salvo: knn_shap_analysis.png\n")
+    plt.savefig('rf_shap_analysis.png', dpi=150, bbox_inches='tight')
+    print("✓ Gráfico salvo: rf_shap_analysis.png\n")
     plt.show()
 
 
@@ -613,25 +681,26 @@ def main():
     print("\n")
     print("╔" + "="*78 + "╗")
     print("║" + " "*78 + "║")
-    print("║" + "  PREVISÃO DE CONGESTIONAMENTO COM KNN - PIPELINE MODULAR".center(78) + "║")
+    print("║" + "  PREVISÃO DE CONGESTIONAMENTO COM RANDOM FOREST - PIPELINE MODULAR".center(78) + "║")
     print("║" + " "*78 + "║")
     print("╚" + "="*78 + "╝")
     
     print(f"\n📋 CONFIGURAÇÕES:")
-    print(f"   Dataset: {ConfigKNN.DATASET_PATH}")
-    print(f"   Features: {ConfigKNN.FEATURES}")
-    print(f"   Target: {ConfigKNN.TARGET}")
-    print(f"   Validação: {ConfigKNN.VALIDATION_STRATEGY.upper()}")
-    if ConfigKNN.VALIDATION_STRATEGY == 'holdout':
-        print(f"   Test Size: {ConfigKNN.HOLDOUT_TEST_SIZE}")
+    print(f"   Dataset: {ConfigRandomForest.DATASET_PATH}")
+    print(f"   Features: {ConfigRandomForest.FEATURES}")
+    print(f"   Target: {ConfigRandomForest.TARGET}")
+    print(f"   Validação: {ConfigRandomForest.VALIDATION_STRATEGY.upper()}")
+    if ConfigRandomForest.VALIDATION_STRATEGY == 'holdout':
+        print(f"   Test Size: {ConfigRandomForest.HOLDOUT_TEST_SIZE}")
     else:
-        print(f"   N-Folds: {ConfigKNN.KFOLD_N_SPLITS}")
-    print(f"   N-Neighbors: {ConfigKNN.N_NEIGHBORS}")
-    print(f"   SHAP: {'Habilitado' if ConfigKNN.SHAP_ENABLED else 'Desabilitado'}\n")
+        print(f"   N-Folds: {ConfigRandomForest.KFOLD_N_SPLITS}")
+    print(f"   N-Estimators: {ConfigRandomForest.N_ESTIMATORS}")
+    print(f"   Max-Depth: {ConfigRandomForest.MAX_DEPTH}")
+    print(f"   SHAP: {'Habilitado' if ConfigRandomForest.SHAP_ENABLED else 'Desabilitado'}\n")
     
     try:
         # 1. Preparação
-        df = prepare_data(ConfigKNN.DATASET_PATH)
+        df = prepare_data(ConfigRandomForest.DATASET_PATH)
         
         # 2. Treinamento
         results = train_model(df)
@@ -640,17 +709,19 @@ def main():
         print_metrics(results)
         
         # 4. Visualizações
-        if ConfigKNN.VALIDATION_STRATEGY == 'holdout':
+        if ConfigRandomForest.VALIDATION_STRATEGY == 'holdout':
             plot_results_holdout(results)
+            plot_feature_importance(results)
         else:
             plot_results_kfold(results)
+            plot_feature_importance(results)
         
         # 5. SHAP
         explain_with_shap(results)
         
         # 6. Salva resultados
-        if ConfigKNN.SAVE_RESULTS:
-            save_results(results, ConfigKNN.RESULTS_FILE)
+        if ConfigRandomForest.SAVE_RESULTS:
+            save_results(results, ConfigRandomForest.RESULTS_FILE)
         
         print("\n" + "="*80)
         print("  ✅ PIPELINE CONCLUÍDO COM SUCESSO!")
@@ -665,14 +736,16 @@ def save_results(results: dict, filename: str) -> None:
     """Salva resultados em JSON."""
     results_to_save = {
         'timestamp': datetime.now().isoformat(),
+        'algorithm': 'Random Forest Regressor',
         'configuration': {
-            'strategy': ConfigKNN.VALIDATION_STRATEGY,
-            'n_neighbors': ConfigKNN.N_NEIGHBORS,
-            'features': ConfigKNN.FEATURES,
+            'strategy': ConfigRandomForest.VALIDATION_STRATEGY,
+            'n_estimators': ConfigRandomForest.N_ESTIMATORS,
+            'max_depth': ConfigRandomForest.MAX_DEPTH,
+            'features': ConfigRandomForest.FEATURES,
         }
     }
     
-    if ConfigKNN.VALIDATION_STRATEGY == 'holdout':
+    if ConfigRandomForest.VALIDATION_STRATEGY == 'holdout':
         results_to_save['metrics'] = {
             k: float(v) for k, v in results['metrics'].items()
         }
@@ -683,6 +756,11 @@ def save_results(results: dict, filename: str) -> None:
             'mae_mean': float(results['cv_mae_mean']),
             'mae_std': float(results['cv_mae_std']),
         }
+    
+    # Feature importance
+    results_to_save['feature_importance'] = {}
+    for _, row in results['feature_importance'].iterrows():
+        results_to_save['feature_importance'][row['Feature']] = float(row['Importance'])
     
     with open(filename, 'w') as f:
         json.dump(results_to_save, f, indent=2)
