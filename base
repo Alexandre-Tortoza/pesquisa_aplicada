@@ -1,0 +1,11 @@
+\section{Metodologia}
+A metodologia adotada nesta pesquisa foi estruturada em quatro etapas principais, coleta de dados, tratamento e preparação, testes com algoritmos de machine learning e análise dos resultados. O pipeline seguido está ilustrado na Figura 1.
+
+Inicialmente, partimos de um dataset referente ao trânsito da cidade de São Paulo. Para enriquecer a análise e estabelecer uma correlação entre o comportamento do trânsito e o crescimento populacional da capital, buscamos dados complementares no portal https://dadosabertos.sp.gov.br. De lá, extraímos um segundo dataset contendo informações sobre a população de São Paulo ao longo dos anos.
+
+Na segunda etapa, realizamos a limpeza e padronização dos dados. Os datasets apresentavam ruídos, campos fora de padrão e diferentes codificações de texto (encodings), o que exigiu um processo cuidadoso de tratamento para garantir a compatibilidade e integridade das informações. Após a unificação dos dados, com as variáveis devidamente estruturadas, avançamos para a etapa de testes com algoritmos de aprendizado de máquina.
+
+Os testes foram conduzidos com diferentes modelos, e os resultados foram armazenados para posterior comparação, tanto em termos de desempenho quanto de qualidade preditiva. Essa abordagem permitiu avaliar a eficácia dos algoritmos frente aos dados tratados e entender melhor a relação entre o crescimento populacional e o impacto no trânsito da cidade.
+
+\subsection{Datasets}
+O nosso ponto de partida foi o dataset do transito de sao paulo, em particular o que escolhemos se pareceu pertinente a pesquisa devido as colunas de dia,hora, região e o mais importante o congestionamto, alem de algumas outras colunas que foram descartadas, [Continuar e revisar]
