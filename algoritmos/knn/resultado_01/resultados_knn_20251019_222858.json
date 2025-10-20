@@ -1,0 +1,22 @@
+{
+  "timestamp": "2025-10-19T22:29:23.223551",
+  "configuration": {
+    "seed": 42,
+    "VALIDATION_STRATEGY": "holdout",
+    "HOLDOUT_TEST_SIZE": 0.25,
+    "KFOLD_N_SPLITS": 10,
+    "N_NEIGHBORS": 5,
+    "WEIGHTS": "uniform",
+    "METRIC": "minkowski",
+    "SHAP_N_SAMPLES": 100
+  },
+  "metrics": {
+    "train_mae": 757.3583438621317,
+    "test_mae": 953.8763370352121,
+    "train_rmse": 1204.8360808237735,
+    "test_rmse": 1504.1642734161794,
+    "train_r2": 0.6709601904338716,
+    "test_r2": 0.491257146090303
+  },
+  "ideia": " verificar se o aumento no número de vizinhos e o uso de pesos iguais reduzem o overfitting."
+}

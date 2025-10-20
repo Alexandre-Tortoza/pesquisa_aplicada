@@ -1,0 +1,20 @@
+{
+  "timestamp": "2025-10-19T22:36:20.750358",
+  "configuration": {
+    "seed": 42,
+    "VALIDATION_STRATEGY": "kfold",
+    "HOLDOUT_TEST_SIZE": 0.2,
+    "KFOLD_N_SPLITS": 5,
+    "N_NEIGHBORS": 8,
+    "WEIGHTS": "uniform",
+    "METRIC": "chebyshev",
+    "SHAP_N_SAMPLES": 100
+  },
+  "cv_scores": {
+    "r2_mean": 0.4797522650267922,
+    "r2_std": 0.0028212674016589575,
+    "mae_mean": 974.9039204573137,
+    "mae_std": 3.7955045425800833
+  },
+  "ideia": "explorar a métrica de Chebyshev (distância máxima) e reduzir viés de região, focando na variação temporal."
+}

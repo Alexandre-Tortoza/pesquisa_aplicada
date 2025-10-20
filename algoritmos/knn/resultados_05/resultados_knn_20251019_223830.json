@@ -1,0 +1,22 @@
+{
+  "timestamp": "2025-10-19T22:38:56.224623",
+  "configuration": {
+    "seed": 42,
+    "VALIDATION_STRATEGY": "holdout",
+    "HOLDOUT_TEST_SIZE": 0.15,
+    "KFOLD_N_SPLITS": 5,
+    "N_NEIGHBORS": 6,
+    "WEIGHTS": "uniform",
+    "METRIC": "chebyshev",
+    "SHAP_N_SAMPLES": 100
+  },
+  "metrics": {
+    "train_mae": 795.9677082713995,
+    "test_mae": 966.0902735370296,
+    "train_rmse": 1252.211061336442,
+    "test_rmse": 1513.2619715175842,
+    "train_r2": 0.6452458688949775,
+    "test_r2": 0.48234458653602763
+  },
+  "ideia": "priorizar variáveis espaciais e demográficas, avaliando como a densidade populacional e região influenciam o tráfego."
+}

@@ -1,0 +1,20 @@
+{
+  "timestamp": "2025-10-19T22:32:06.157284",
+  "configuration": {
+    "seed": 42,
+    "VALIDATION_STRATEGY": "kfold",
+    "HOLDOUT_TEST_SIZE": 0.2,
+    "KFOLD_N_SPLITS": 10,
+    "N_NEIGHBORS": 7,
+    "WEIGHTS": "distance",
+    "METRIC": "manhattan",
+    "SHAP_N_SAMPLES": 100
+  },
+  "cv_scores": {
+    "r2_mean": 0.5603194676634929,
+    "r2_std": 0.00675203149148066,
+    "mae_mean": 749.2542279174637,
+    "mae_std": 5.207115401393068
+  },
+  "ideia": "testar maior robustez na avaliação com validação cruzada e sensibilidade à distância de Manhattan (L1)"
+}
