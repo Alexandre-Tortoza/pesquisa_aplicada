@@ -4,8 +4,8 @@
 
 | Sigla               | Nome Completo                     | Descrição                                                                                                                       |
 | ------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| **MAE**             | _Mean Absolute Error_             | Erro médio absoluto — mede, em metros, o quanto as previsões diferem dos valores reais. Valores menores indicam maior precisão. |
-| **RMSE**            | _Root Mean Squared Error_         | Raiz do erro quadrático médio — penaliza mais fortemente erros grandes. Ideal para avaliar estabilidade do modelo.              |
+| **MAE**             | _Mean Absolute Error_             | Erro médio absoluto - mede, em metros, o quanto as previsões diferem dos valores reais. Valores menores indicam maior precisão. |
+| **RMSE**            | _Root Mean Squared Error_         | Raiz do erro quadrático médio - penaliza mais fortemente erros grandes. Ideal para avaliar estabilidade do modelo.              |
 | **R²**              | _Coeficiente de Determinação_     | Mede o quanto o modelo explica a variância dos dados reais. Varia entre 0 e 1, sendo valores mais altos melhores.               |
 | **Holdout**         | Divisão simples de treino e teste | Parte dos dados é usada para treino e outra para teste, permitindo avaliação direta de generalização.                           |
 | **K-Fold**          | Validação Cruzada                 | Divide os dados em _k_ partes (folds), treinando e testando várias vezes. Reduz viés e aumenta robustez da avaliação.           |
