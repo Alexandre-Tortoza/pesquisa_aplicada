@@ -8,4 +8,21 @@ Na segunda etapa, realizamos a limpeza e padronização dos dados. Os datasets a
 Os testes foram conduzidos com diferentes modelos, e os resultados foram armazenados para posterior comparação, tanto em termos de desempenho quanto de qualidade preditiva. Essa abordagem permitiu avaliar a eficácia dos algoritmos frente aos dados tratados e entender melhor a relação entre o crescimento populacional e o impacto no trânsito da cidade.
 
 \subsection{Datasets}
-O nosso ponto de partida foi o dataset do transito de sao paulo, em particular o que escolhemos se pareceu pertinente a pesquisa devido as colunas de dia,hora, região e o mais importante o congestionamto, alem de algumas outras colunas que foram descartadas, [Continuar e revisar]
+O ponto de partida da pesquisa foi a seleção de um dataset sobre o trânsito da cidade de São Paulo. Este conjunto de dados se mostrou especialmente relevante por conter informações como dia, hora, região e, principalmente, o nível de congestionamento, variável central para os objetivos do estudo. Algumas colunas adicionais estavam presentes, mas foram descartadas por não contribuírem diretamente para a análise proposta.
+
+Para estabelecer uma correlação entre o comportamento do trânsito e o crescimento populacional da cidade, foi incorporado um segundo dataset, obtido por meio do portal dadosabertos.gov.sp Este conjunto trazia dados populacionais da capital paulista ao longo dos anos, incluindo as variáveis ano, distrito, sexo, faixa etária e população total.
+
+Apesar da riqueza informacional, esse segundo dataset apresentou desafios técnicos. Havia ruídos nos dados, campos fora de padrão e codificações de texto distintas (encodings), o que exigiu um esforço adicional para uniformização e tratamento adequado. Um ponto específico que merece destaque é a estrutura da variável idade, que estava agrupada em faixas etárias (por exemplo, "10 a 14 anos", "15 a 19 anos"). Essa segmentação dificultou a filtragem precisa de indivíduos com idade mínima para conduzir veículos (a partir dos 18 anos), sendo possível apenas considerar faixas a partir dos 20 anos, o que introduz um pequeno desvio na análise.
+
+A aquisição dos dados, portanto, envolveu não apenas a seleção criteriosa dos conjuntos mais relevantes, mas também a antecipação dos desafios que seriam enfrentados nas etapas seguintes de tratamento e modelagem.
+
+\subsection{limpeza e preparacao}
+
+Para garantir maior flexibilidade em futuras alterações e facilitar a aplicação dos algoritmos de aprendizado de máquina, os datasets utilizados foram processados em duas etapas principais: limpeza e padronização.
+
+Na etapa de limpeza, foram removidos campos irrelevantes para os objetivos da pesquisa, como identificadores únicos (ID) que não contribuíam para os modelos preditivos. Também foram descartados registros com valores nulos e aplicadas medidas de sanitização textual, como a remoção de acentuação e a padronização de nomes e categorias. Além disso, todos os arquivos foram convertidos para o padrão de codificação UTF-8, evitando problemas de leitura e compatibilidade entre os conjuntos de dados.
+
+O dataset populacional exigiu um tratamento mais aprofundado. Uma das principais modificações foi a criação de uma nova variável chamada região, obtida por meio de um mapeamento dos distritos de São Paulo para as cinco grandes regiões utilizadas no dataset de trânsito: Norte, Sul, Leste, Oeste e Centro. Essa adaptação foi essencial para permitir a integração entre os dois conjuntos de dados e possibilitar análises comparativas entre crescimento populacional e impacto no trânsito por região.
+
+Já o dataset de trânsito passou por uma limpeza básica e pela padronização de codificação para UTF-8, mas não exigiu modificações estruturais significativas, uma vez que suas variáveis principais já estavam bem definidas e alinhadas com os objetivos da pesquisa.
+
