@@ -1,0 +1,23 @@
+{
+  "timestamp": "2025-10-19T22:53:32.236415",
+  "configuration": {
+    "strategy": "kfold",
+    "fit_intercept": true,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "cv_scores": {
+    "r2_mean": 0.1047565998416951,
+    "r2_std": 0.003285657011843874,
+    "mae_mean": 1377.8975894816667,
+    "mae_std": 6.292090799425128
+  },
+  "ideia": "estar linearidade puramente temporal, verificando se hora, dia e mês conseguem explicar boa parte da variância nos congestionamentos."
+}

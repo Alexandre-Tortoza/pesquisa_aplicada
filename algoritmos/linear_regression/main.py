@@ -38,10 +38,10 @@ class ConfigLinearRegression:
     
     # Estratégia de Validação
     # Opções: 'holdout' ou 'kfold'
-    VALIDATION_STRATEGY = 'holdout'
+    VALIDATION_STRATEGY = 'kfold'
     HOLDOUT_TEST_SIZE = 0.2  # Proporção teste (0.2 = 80/20)
-    KFOLD_N_SPLITS = 5  # Número de folds para validação cruzada
-    RANDOM_STATE = 42
+    KFOLD_N_SPLITS = 7  # Número de folds para validação cruzada
+    RANDOM_STATE = 123
     
     # Hiperparâmetros da Linear Regression
     FIT_INTERCEPT = True  # Incluir intercepto (bias)

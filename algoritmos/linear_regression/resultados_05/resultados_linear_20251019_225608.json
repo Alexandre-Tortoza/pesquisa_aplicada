@@ -1,0 +1,23 @@
+{
+  "timestamp": "2025-10-19T22:56:14.058443",
+  "configuration": {
+    "strategy": "kfold",
+    "fit_intercept": true,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "cv_scores": {
+    "r2_mean": 0.1047609783308906,
+    "r2_std": 0.0018841207467755765,
+    "mae_mean": 1377.8994559524108,
+    "mae_std": 5.959797204489335
+  },
+  "ideia": "arantir robustez estatística com mais folds (7) e semente diferente, testando estabilidade dos coeficientes sob diferentes divisões dos dados."
+}

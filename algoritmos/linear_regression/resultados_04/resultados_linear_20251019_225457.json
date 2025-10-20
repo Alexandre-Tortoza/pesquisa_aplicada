@@ -1,0 +1,35 @@
+{
+  "timestamp": "2025-10-19T22:55:04.016367",
+  "configuration": {
+    "strategy": "holdout",
+    "fit_intercept": true,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "metrics": {
+    "train_mae": 1377.6415833728797,
+    "test_mae": 1379.6762459914012,
+    "train_rmse": 1988.9129473573475,
+    "test_rmse": 1990.8595095248254,
+    "train_r2": 0.1048786365620501,
+    "test_r2": 0.10448661615716592,
+    "intercept": 2413.811674329728
+  },
+  "coefficients": {
+    "pop_total": 411.1742934879034,
+    "hora_numeric": 265.22843190147216,
+    "via_expressa_encoded": -525.3052284673203,
+    "regiao_encoded": -239.76836592503267,
+    "sexo_encoded": 4.263256414560601e-14,
+    "dia_semana": 37.78621838366618,
+    "mes": 24.993051139475313
+  },
+  "ideia": "ssa configuração reduz o modelo à dimensão geográfica, permitindo interpretar o quanto região e população afetam o tamanho médio dos congestionamentos."
+}

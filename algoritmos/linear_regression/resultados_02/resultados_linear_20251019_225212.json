@@ -1,0 +1,35 @@
+{
+  "timestamp": "2025-10-19T22:52:20.068885",
+  "configuration": {
+    "strategy": "holdout",
+    "fit_intercept": false,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "metrics": {
+    "train_mae": 2440.8214240075413,
+    "test_mae": 2443.7620196271664,
+    "train_rmse": 3126.0409103102697,
+    "test_rmse": 3133.880113863444,
+    "train_r2": -1.2150413109790619,
+    "test_r2": -1.208373569315055,
+    "intercept": 0.0
+  },
+  "coefficients": {
+    "pop_total": 409.6715771659022,
+    "hora_numeric": 259.94034299857844,
+    "via_expressa_encoded": -527.8110155206738,
+    "regiao_encoded": -241.47399512952757,
+    "sexo_encoded": -1.4210854715202004e-14,
+    "dia_semana": 36.54319132385562,
+    "mes": 21.095640683855862
+  },
+  "ideia": "valiar o impacto de remover o intercepto (bias) - útil para verificar se os coeficientes explicam toda a média dos dados ou se há dependência estrutural entre as variáveis."
+}
