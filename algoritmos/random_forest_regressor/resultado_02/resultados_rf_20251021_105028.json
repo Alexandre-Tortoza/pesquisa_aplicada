@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-10-21T11:30:17.226832",
+  "algorithm": "Random Forest Regressor",
+  "configuration": {
+    "strategy": "holdout",
+    "n_estimators": 200,
+    "max_depth": 30,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "metrics": {
+    "train_mae": 327.1276245085558,
+    "test_mae": 749.7046291367376,
+    "train_rmse": 759.0555672444677,
+    "test_rmse": 1439.9589634222175,
+    "train_r2": 0.8694010589414255,
+    "test_r2": 0.5337616269038756
+  },
+  "feature_importance": {
+    "pop_total": 0.3808709851664062,
+    "mes": 0.15560632715122463,
+    "hora_numeric": 0.1480095999989728,
+    "via_expressa_encoded": 0.11377397988190312,
+    "dia_semana": 0.11085925506764605,
+    "regiao_encoded": 0.09087985273384729,
+    "sexo_encoded": 0.0
+  },
+  "ideia": "umentar a capacidade de aprendizado e profundidade, removendo limitação de recursos por divisão. Avalia o modelo em modo quase determinístico (sem bootstrap) para medir overfitting."
+}

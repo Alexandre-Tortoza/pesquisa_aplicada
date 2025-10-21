@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-10-21T13:08:11.661513",
+  "configuration": {
+    "strategy": "holdout",
+    "n_estimators": 400,
+    "max_depth": 10,
+    "learning_rate": 0.03,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "metrics": {
+    "train_mae": 787.4474487304688,
+    "test_mae": 844.7545166015625,
+    "train_rmse": 1233.9125272887054,
+    "test_rmse": 1327.361763047286,
+    "train_r2": 0.6548870801925659,
+    "test_r2": 0.6038256287574768
+  },
+  "ideia": "aumentar a profundidade e o número de árvores, reduzindo a taxa de aprendizado para capturar relações mais complexas sem overfitting."
+}

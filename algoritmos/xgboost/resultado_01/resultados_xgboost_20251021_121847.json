@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-10-21T12:19:23.944560",
+  "configuration": {
+    "strategy": "holdout",
+    "n_estimators": 100,
+    "max_depth": 6,
+    "learning_rate": 0.1,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "metrics": {
+    "train_mae": 944.9761352539062,
+    "test_mae": 953.1461791992188,
+    "train_rmse": 1458.2228053353165,
+    "test_rmse": 1468.6818069275591,
+    "train_r2": 0.518830418586731,
+    "test_r2": 0.5126440525054932
+  },
+  "ideia": "modelo de referência com hiperparâmetros padrão do XGBoost, equilibrando precisão e tempo de treino."
+}

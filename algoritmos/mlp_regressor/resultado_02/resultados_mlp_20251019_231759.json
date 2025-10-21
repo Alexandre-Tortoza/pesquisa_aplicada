@@ -1,0 +1,30 @@
+{
+  "timestamp": "2025-10-19T23:57:25.922978",
+  "configuration": {
+    "strategy": "holdout",
+    "hidden_layer_sizes": [256, 128, 64, 32],
+    "activation": "relu",
+    "solver": "adam",
+    "learning_rate_init": 0.001,
+    "max_iter": 500,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "metrics": {
+    "train_mae": 939.6759514322287,
+    "test_mae": 962.2897152077662,
+    "train_rmse": 1455.3509723185923,
+    "test_rmse": 1490.8306411870878,
+    "train_r2": 0.520723811022108,
+    "test_r2": 0.4978338046819364,
+    "n_iterations": 304
+  },
+  "ideia": "testar rede mais profunda com regularização L2 (alpha maior). Aumenta capacidade de aprendizado e reduz overfitting."
+}

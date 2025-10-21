@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-10-21T11:49:00.634893",
+  "algorithm": "Random Forest Regressor",
+  "configuration": {
+    "strategy": "holdout",
+    "n_estimators": 300,
+    "max_depth": 15,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "metrics": {
+    "train_mae": 787.9491583359354,
+    "test_mae": 857.9492869583031,
+    "train_rmse": 1239.3414461173058,
+    "test_rmse": 1348.9003802647667,
+    "train_r2": 0.6524379742882036,
+    "test_r2": 0.5888970366543493
+  },
+  "feature_importance": {
+    "pop_total": 0.3629846254749482,
+    "via_expressa_encoded": 0.20917576725944795,
+    "regiao_encoded": 0.18349072310551934,
+    "hora_numeric": 0.11561132589782504,
+    "mes": 0.07193155875430068,
+    "dia_semana": 0.056805999507958796,
+    "sexo_encoded": 0.0
+  },
+  "ideia": "grande diversidade entre árvores, combinando número alto de estimadores e divisão com base em log2. Foca na robustez e estabilidade das previsões."
+}

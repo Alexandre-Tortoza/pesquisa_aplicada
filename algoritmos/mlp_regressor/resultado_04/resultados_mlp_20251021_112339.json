@@ -1,0 +1,30 @@
+{
+  "timestamp": "2025-10-21T11:30:30.276522",
+  "configuration": {
+    "strategy": "holdout",
+    "hidden_layer_sizes": [64, 32],
+    "activation": "relu",
+    "solver": "adam",
+    "learning_rate_init": 0.002,
+    "max_iter": 300,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "metrics": {
+    "train_mae": 999.022184096815,
+    "test_mae": 1005.1034828177058,
+    "train_rmse": 1530.5033518679552,
+    "test_rmse": 1537.113226656551,
+    "train_r2": 0.46904087880730594,
+    "test_r2": 0.4687248497427291,
+    "n_iterations": 212
+  },
+  "ideia": "testar uma arquitetura menor e mais rápida, ideal para inferência em tempo real ou protótipos."
+}

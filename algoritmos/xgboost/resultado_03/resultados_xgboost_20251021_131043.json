@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-10-21T13:10:50.949845",
+  "configuration": {
+    "strategy": "kfold",
+    "n_estimators": 80,
+    "max_depth": 5,
+    "learning_rate": 0.02,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "cv_scores": {
+    "r2_mean": 0.3632292628288269,
+    "r2_std": 0.0011015179566171863,
+    "mae_mean": 1124.322412109375,
+    "mae_std": 2.101651467634638
+  },
+  "ideia": "priorizar velocidade e generalização, aplicando forte regularização L1/L2 e maior taxa de aprendizado."
+}

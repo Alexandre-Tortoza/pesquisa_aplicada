@@ -1,0 +1,34 @@
+{
+  "timestamp": "2025-10-21T12:16:31.819042",
+  "algorithm": "Random Forest Regressor",
+  "configuration": {
+    "strategy": "kfold",
+    "n_estimators": 150,
+    "max_depth": 12,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "cv_scores": {
+    "r2_mean": 0.526728086712562,
+    "r2_std": 0.005111261194814606,
+    "mae_mean": 931.0495460900547,
+    "mae_std": 5.479724136351549
+  },
+  "feature_importance": {
+    "pop_total": 0.37154166666896493,
+    "via_expressa_encoded": 0.24636082563910272,
+    "regiao_encoded": 0.2159771216114631,
+    "hora_numeric": 0.09635975971533009,
+    "dia_semana": 0.03788319307957756,
+    "mes": 0.03187743328556146,
+    "sexo_encoded": 0.0
+  },
+  "ideia": "aplicar regularização estrutural forçando folhas mais densas e splits maiores. Ideal para testar generalização sob alta validação cruzada."
+}

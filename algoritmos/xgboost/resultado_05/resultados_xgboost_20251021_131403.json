@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-10-21T13:14:10.648143",
+  "configuration": {
+    "strategy": "holdout",
+    "n_estimators": 50,
+    "max_depth": 4,
+    "learning_rate": 0.3,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "metrics": {
+    "train_mae": 979.7708740234375,
+    "test_mae": 983.6082763671875,
+    "train_rmse": 1504.291859979306,
+    "test_rmse": 1507.520066201442,
+    "train_r2": 0.48794734477996826,
+    "test_r2": 0.486527681350708
+  },
+  "ideia": "criar um modelo leve e rápido, voltado para inferência em tempo real com baixo custo computacional."
+}

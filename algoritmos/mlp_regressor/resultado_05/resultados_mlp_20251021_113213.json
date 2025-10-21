@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-10-21T13:08:12.411944",
+  "configuration": {
+    "strategy": "kfold",
+    "hidden_layer_sizes": [100, 50],
+    "activation": "relu",
+    "solver": "adam",
+    "learning_rate_init": 0.002,
+    "max_iter": 500,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "cv_scores": {
+    "r2_mean": 0.4729345824330274,
+    "r2_std": 0.005442808218186826,
+    "mae_mean": 988.4071916098488,
+    "mae_std": 9.398326925474683
+  },
+  "ideia": "realizar avaliação robusta via K-Fold, validando estabilidade da arquitetura clássica em diferentes subconjuntos."
+}

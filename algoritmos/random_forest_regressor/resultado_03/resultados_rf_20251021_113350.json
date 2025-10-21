@@ -1,0 +1,34 @@
+{
+  "timestamp": "2025-10-21T11:46:08.297523",
+  "algorithm": "Random Forest Regressor",
+  "configuration": {
+    "strategy": "kfold",
+    "n_estimators": 50,
+    "max_depth": 10,
+    "features": [
+      "pop_total",
+      "hora_numeric",
+      "via_expressa_encoded",
+      "regiao_encoded",
+      "sexo_encoded",
+      "dia_semana",
+      "mes"
+    ]
+  },
+  "cv_scores": {
+    "r2_mean": 0.4892195701587688,
+    "r2_std": 0.0023046375685178175,
+    "mae_mean": 974.834438819223,
+    "mae_std": 3.3483432755453597
+  },
+  "feature_importance": {
+    "pop_total": 0.34756004787333744,
+    "via_expressa_encoded": 0.2812628779989923,
+    "regiao_encoded": 0.23527868050488107,
+    "hora_numeric": 0.08861516632702145,
+    "dia_semana": 0.029738867379416126,
+    "mes": 0.01754435991635169,
+    "sexo_encoded": 0.0
+  },
+  "ideia": "testar modelo mais leve com menos árvores e profundidade controlada. Ideal para checar se o desempenho se mantém com menor custo computacional e menor risco de sobreajuste."
+}
