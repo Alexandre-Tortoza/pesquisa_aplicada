@@ -7,13 +7,13 @@
 | **KNN #5** | Holdout     | Chebyshev | Uniform  | 6   | 966.1     | 1513.3     | 0.48     |
 
 
-| Modelo        | Estratégia  | Intercepto | MAE Teste  | RMSE Teste | R² Teste  | Observação                                |
-| ------------- | ----------- | ---------- | ---------- | ---------- | --------- | ----------------------------------------- |
-| **Linear #1** | Holdout     | True       | **1379.7** | 1990.8     | **0.10**  | baseline com todas as variáveis           |
-| **Linear #2** | Holdout     | False      | **2443.8** | 3133.9     | **-1.21** | sem intercepto, forte perda de desempenho |
-| **Linear #3** | K-Fold (10) | True       | **1377.9** | -          | **0.10**  | avaliação cruzada estável                 |
-| **Linear #4** | Holdout     | True       | **1379.7** | 1990.8     | **0.10**  | foco geográfico e populacional            |
-| **Linear #5** | K-Fold (7)  | True       | **1377.9** | -          | **0.10**  | teste de robustez com mais folds          |
+| Modelo        | Estratégia  | Intercepto | MAE Teste  | RMSE Teste | R² Teste  | 
+| ------------- | ----------- | ---------- | ---------- | ---------- | --------- | 
+| **Linear #1** | Holdout     | True       | **1379.7** | 1990.8     | **0.10**  | 
+| **Linear #2** | Holdout     | False      | **2443.8** | 3133.9     | **-1.21** | 
+| **Linear #3** | K-Fold (10) | True       | **1377.9** | -          | **0.10**  |
+| **Linear #4** | Holdout     | True       | **1379.7** | 1990.8     | **0.10**  |
+| **Linear #5** | K-Fold (7)  | True       | **1377.9** | -          | **0.10**  |
 
 
 | Modelo     | Estratégia | Arquitetura (camadas) | Ativação | Otimizador | Learning Rate | Épocas | MAE Teste         | RMSE Teste | R² Teste         |
@@ -25,20 +25,21 @@
 | **MLP #5** | K-Fold (5) | (168, 64, 32)         | Tanh     | SGD        | 0.01          | 600    | 1502.7 (média)    | —          | 0.00             |
 
 
-| Modelo    | Estratégia | Árvores | Profundidade Máx. | MAE Teste | RMSE Teste | R² Teste | Observações                                             |
-| --------- | ---------- | ------- | ----------------- | --------- | ---------- | -------- | ------------------------------------------------------- |
-| **RF #1** | Holdout    | 100     | — (sem limite)    | 760.2     | 1298.6     | 0.62     | Modelo base (sem restrição de profundidade)             |
-| **RF #2** | Holdout    | 200     | 30                | 749.7     | 1439.9     | 0.53     | Mais profundo, avalia overfitting e capacidade ampliada |
-| **RF #3** | Holdout    | 300     | 15                | **857.9** | 1348.9     | 0.59     | Modelo robusto com grande diversidade de árvores        |
-| **RF #4** | K-Fold (5) | 50      | 10                | **974.8** | —          | **0.49** | Modelo leve, prioriza eficiência e generalização        |
-| **RF #5** | K-Fold (5) | 150     | 12                | **931.0** | —          | **0.53** | Validação cruzada com regularização estrutural          |
+| Modelo    | Estratégia | Árvores | Profundidade Máx. | MAE Teste | RMSE Teste | R² Teste |
+| --------- | ---------- | ------- | ----------------- | --------- | ---------- | -------- |
+| **RF #1** | Holdout    | 100     | — (sem limite)    | 760.2     | 1298.6     | 0.62     |
+| **RF #2** | Holdout    | 200     | 30                | 749.7     | 1439.9     | 0.53     |
+| **RF #3** | Holdout    | 300     | 15                | **857.9** | 1348.9     | 0.59     |
+| **RF #4** | K-Fold (5) | 50      | 10                | **974.8** | —          | **0.49** |
+| **RF #5** | K-Fold (5) | 150     | 12                | **931.0** | —          | **0.53** |
 
 
-| Modelo     | Estratégia | Árvores | Profundidade | Learning Rate | MAE Teste | RMSE Teste | R² Teste | Observações                                       |
-| ---------- | ---------- | ------- | ------------ | ------------- | --------- | ---------- | -------- | ------------------------------------------------- |
-| **XGB #1** | Holdout    | 100     | 6            | 0.10          | 953.1     | 1468.7     | 0.51     | Modelo base com hiperparâmetros padrão            |
-| **XGB #2** | Holdout    | 400     | 10           | 0.03          | **844.7** | **1327.3** | **0.60** | Profundo e estável, melhor resultado geral        |
-| **XGB #3** | K-Fold (5) | 80      | 5            | 0.02          | 1124.3    | —          | 0.36     | Simples e regularizado, prioriza velocidade       |
-| **XGB #4** | K-Fold (5) | 300     | 8            | 0.05          | **913.0** | —          | **0.55** | Alta estabilidade e generalização                 |
-| **XGB #5** | Holdout    | 50      | 4            | 0.30          | 983.6     | 1507.5     | 0.49     | Leve e rápido, voltado à inferência em tempo real |
+| Modelo     | Estratégia | Árvores | Profundidade | Learning Rate | MAE Teste | RMSE Teste | R² Teste | 
+| ---------- | ---------- | ------- | ------------ | ------------- | --------- | ---------- | -------- | 
+| **XGB #1** | Holdout    | 100     | 6            | 0.10          | 953.1     | 1468.7     | 0.51     | 
+| **XGB #2** | Holdout    | 400     | 10           | 0.03          | **844.7** | **1327.3** | **0.60** | 
+| **XGB #3** | K-Fold (5) | 80      | 5            | 0.02          | 1124.3    | —          | 0.36     | 
+| **XGB #4** | K-Fold (5) | 300     | 8            | 0.05          | **913.0** | —          | **0.55** | 
+| **XGB #5** | Holdout    | 50      | 4            | 0.30          | 983.6     | 1507.5     | 0.49     |
+
 
