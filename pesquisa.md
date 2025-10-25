@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
+\usepackage[portuguese]{babel}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
@@ -95,7 +96,7 @@ Apesar da riqueza informacional, esse segundo dataset apresentou desafios técni
 
 A aquisição dos dados, portanto, envolveu não apenas a seleção criteriosa dos conjuntos mais relevantes, mas também a antecipação dos desafios que seriam enfrentados nas etapas seguintes de tratamento e modelagem.
 
-\subsection{limpeza e preparacao}
+\subsection{limpeza e preparação}
 
 Para assegurar a consistência e a qualidade dos dados utilizados na modelagem preditiva, foram desenvolvidos dois pipelines automatizados de pré-processamento, um voltado ao tratamento dos dados populacionais e outro dedicado ao conjunto de dados de congestionamentos de tráfego. Ambos os processos tiveram como objetivo padronizar formatos, remover inconsistências e preparar os dados para a etapa de integração e posterior aplicação de algoritmos de aprendizado de máquina.
 
@@ -105,12 +106,38 @@ O conjunto de dados de tráfego, processado pelo script python, exigiu um tratam
 
 Ambos os conjuntos de dados resultantes foram padronizados quanto à codificação e ao delimitador, de forma a assegurar compatibilidade durante o processo de integração. Essa padronização foi fundamental para que os datasets pudessem ser combinados por meio das variáveis região e ano, possibilitando análises conjuntas sobre o impacto da densidade populacional no comportamento do tráfego e permitindo que as etapas seguintes de modelagem preditiva fossem conduzidas de maneira consistente e reprodutível.
 
+\subsection{Protocolos e modelos utilizados}
 
+Para cada modelo foram aplicados dois protocolos experimentais:
+\textbf{K-Fold (5 partições)} e \textbf{Hold-Out (70\% treino / 30\% teste)}, com \textbf{random state} fixo. Esses protocolos foram escolhidos devido à necessidade de avaliar a generalização temporal e espacial dos modelos. O Hold-Out apresenta facilidade para se trabalhar com um grande volume de dados ($\approx$316 mil amostras), enquanto o K-Fold oferece mais estabilidade e confiabilidade nos resultados, mesmo utilizando um K moderado ($K=5$).
 
+Nos modelos de treinamento foram utilizadas cinco abordagens diferentes, resumidas na Tabela 1, junto aos seus principais parâmetros.
 
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|l|c|}
+\hline
+\textbf{Modelo} & \textbf{Principais parâmetros} \\ \hline
+Regressão Linear & fit\_intercept=True \\ \hline
+KNN Regressor & k=5 \\ \hline
+Random Forest & n\_estimators=100 \\ \hline
+XGBoost & learning\_rate=0.1, max\_depth=6 \\ \hline
+MLP (Neural Network) & camadas 100-50-25, ReLU \\ \hline
+\end{tabular}
+\caption{Modelos de Regressão}
+\label{tab:modelos}
+\end{table}
+\subsection{Avaliação}
 
+Os modelos foram ajustados utilizando \textbf{Grid Search} combinado com validação empírica, priorizando equilíbrio entre desempenho e interpretabilidade dos dados, tendo as seguintes métricas de avaliação:
 
+\begin{itemize}
+    \item \textbf{MAE (Erro Absoluto Médio)} - Média das diferenças absolutas entre valores observados e previstos;
+    \item \textbf{RMSE (Raiz do Erro Quadrático Médio)} - Raiz quadrada do erro quadrático médio (MSE), retornando a escala original dos dados;
+    \item \textbf{R² (Coeficiente de Determinação)} - Proporção da variabilidade dos dados explicada pelo modelo;
+\end{itemize}
 
+Estas métricas permitem avaliar diferentes aspectos do estudo, o MAE fornece uma medida direta do erro médio, facilitando a interpretação prática, o RMSE penaliza desvios maiores, destacando pontos de erros críticos e o R² indica o quanto a variabilidade do congestionamento tem relação com o crescimento populacional.
 
 \begin{thebibliography}{00}
 \bibitem{b1} R. S. Barboza, ``Visão computacional: estudo comparativo de algoritmos de subtração de fundo aplicados em soluções para o gerenciamento de tráfego urbano de veículos e pedestres,'' M.Sc. dissertation, Programa de Mestrado em Cidades Inteligentes e Sustentáveis, Univ. Nove de Julho, São Paulo, Brazil, 2023.
