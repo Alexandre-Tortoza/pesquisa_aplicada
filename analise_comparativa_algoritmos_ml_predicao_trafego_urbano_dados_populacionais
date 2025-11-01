@@ -1,6 +1,6 @@
 \documentclass[conference]{IEEEtran}
 \IEEEoverridecommandlockouts
-% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
@@ -11,278 +11,116 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{Conference Paper Title*\\
-{\footnotesize \textsuperscript{*}Note: Sub-titles are not captured in Xplore and
-should not be used}
-\thanks{Identify applicable funding agency here. If none, delete this.}
+\title{Análise Comparativa de Algoritmos de Aprendizado de Máquina na Predição do Crescimento do Trânsito Urbano a partir de Dados Populacionais\\
 }
 
-\author{\IEEEauthorblockN{1\textsuperscript{st} Given Name Surname}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
-\and
-\IEEEauthorblockN{2\textsuperscript{nd} Given Name Surname}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
-\and
-\IEEEauthorblockN{3\textsuperscript{rd} Given Name Surname}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
-\and
-\IEEEauthorblockN{4\textsuperscript{th} Given Name Surname}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
-\and
-\IEEEauthorblockN{5\textsuperscript{th} Given Name Surname}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
-\and
-\IEEEauthorblockN{6\textsuperscript{th} Given Name Surname}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address or ORCID}
+\author{\IEEEauthorblockN{Alexandre Marques Tortoza Canoa}
+\IEEEauthorblockA{\textit{Escola Politécnica} \\
+\textit{Pontifícia Universidade Católica do Paraná (PUCPR))}\\
+Curitiba, PR, Brasil \\
+a.marquestortoza@gmail.com}
 }
+
 
 \maketitle
 
 \begin{abstract}
-This document is a model and instructions for \LaTeX.
-This and the IEEEtran.cls file define the components of your paper [title, text, heads, etc.]. *CRITICAL: Do Not Use Symbols, Special Characters, Footnotes, 
-or Math in Paper Title or Abstract.
+O agravamento do congestionamento urbano, impulsionado pelo crescimento populacional e pela expansão da frota de veículos, afeta diretamente a economia, o meio ambiente e o bem-estar social. Para estimar os níveis médios de tráfego nas regiões das cidades, foi aplicada uma abordagem preditiva que combina dados demográficos e históricos de trânsito. Após etapas de pré-processamento e codificação, foram testados diversos algoritmos de aprendizado supervisionado. Os modelos baseados em árvores apresentaram melhor desempenho, com destaque para o Random Forest. A população total foi a variável mais relevante, seguida por fatores temporais e espaciais. A integração entre dados populacionais e padrões de tráfego mostrou-se eficaz para apoiar o planejamento urbano e a gestão inteligente da mobilidade.
 \end{abstract}
 
 \begin{IEEEkeywords}
-component, formatting, style, styling, insert
+Predição de congestionamento, machine learning, dados populacionais, 
+análise comparativa, random forest, tráfego urbano, série temporal, 
+mobilidade urbana
 \end{IEEEkeywords}
 
-\section{Introduction}
-This document is a model and instructions for \LaTeX.
-Please observe the conference page limits. 
+\section{Introdução}
+O congestionamento urbano é um dos principais desafios enfrentados pelas grandes cidades contemporâneas. Intensificado pelo crescimento populacional acelerado e pela expansão desordenada da frota de veículos, esse fenômeno compromete diretamente a qualidade de vida, a eficiência econômica e a sustentabilidade ambiental \cite{1}. Estudos indicam que, em países desenvolvidos, os prejuízos causados pelo tráfego intenso somam bilhões de dólares por ano, refletindo em tempo perdido, aumento do consumo de combustível, elevação dos níveis de poluição e maior incidência de acidentes de trânsito. Na América Latina, o cenário é agravado pelo crescimento urbano desordenado e pela rápida motorização.
 
-\section{Ease of Use}
+\subsection{Motivação}
+Mitigar os impactos econômicos, sociais e ambientais do congestionamento é uma prioridade nas grandes metrópoles. A poluição, os atrasos nas viagens e os custos elevados de transporte exigem soluções eficazes e escaláveis. Antecipar cenários críticos de tráfego é essencial para otimizar a mobilidade e apoiar decisões em tempo real. Algoritmos de aprendizado de máquina desempenham papel significativo na análise de tráfego, permitindo identificar padrões complexos e prever situações de congestionamento \cite{2}. Quando aplicadas a dados históricos, essas técnicas viabilizam ações preventivas como ajustes semafóricos, orientação aos motoristas e melhorias no transporte público. Diversas abordagens têm demonstrado o potencial dessas técnicas para aumentar a eficiência do sistema viário.
 
-\subsection{Maintaining the Integrity of the Specifications}
+\subsection{Problema}
+Nas áreas urbanas, especialmente em grandes centros, o crescimento populacional e a motorização acelerada intensificam os congestionamentos, gerando impactos diretos na população e na economia. Entre os principais efeitos estão o aumento da poluição atmosférica e sonora, o maior consumo de combustível, a perda de tempo nas viagens e o crescimento das taxas de acidentes e infrações. Nos Estados Unidos, o congestionamento é apontado como uma ameaça ao desempenho econômico, enquanto na América Latina o problema se agrava com o crescimento desordenado das cidades.
 
-The IEEEtran class file is used to format your paper and style the text. All margins, 
-column widths, line spaces, and text fonts are prescribed; please do not 
-alter them. You may note peculiarities. For example, the head margin
-measures proportionately more than is customary. This measurement 
-and others are deliberate, using specifications that anticipate your paper 
-as one part of the entire proceedings, and not as an independent document. 
-Please do not revise any of the current designations.
+\subsection{Objetivo}
+Esta pesquisa busca prever, com antecedência, o nível de congestionamento em vias urbanas da cidade de São Paulo, utilizando séries temporais de volume de veículos. O objetivo é modelar a variação do fluxo ao longo do tempo, identificar padrões recorrentes e antecipar os momentos e locais mais propensos a congestionamentos, oferecendo suporte ao planejamento e à gestão inteligente do trânsito.
 
-\section{Prepare Your Paper Before Styling}
-Before you begin to format your paper, first write and save the content as a 
-separate text file. Complete all content and organizational editing before 
-formatting. Please note sections \ref{AA}--\ref{SCM} below for more information on 
-proofreading, spelling and grammar.
+\subsection{Artefato}
+Será desenvolvido um sistema de aprendizado de máquina treinado com dados históricos de tráfego e rótulos de congestionamento. Após o treinamento, o modelo receberá dados atuais como entrada e estimará o nível de congestionamento de curto prazo, disponibilizando as previsões em uma interface voltada ao monitoramento e à tomada de decisão antecipada.
 
-Keep your text and graphic files separate until after the text has been 
-formatted and styled. Do not number text heads---{\LaTeX} will do that 
-for you.
+\section{Estado da Arte}
+O congestionamento urbano permanece como um dos desafios mais persistentes das grandes metrópoles contemporâneas, intensificado pelo crescimento populacional acelerado e pela expansão desordenada das áreas urbanas. Em São Paulo, esse fenômeno atinge dimensões críticas, com a cidade frequentemente figurando entre as mais congestionadas do mundo e registrando perdas econômicas estimadas em bilhões de reais anualmente \cite{3}.
 
-\subsection{Abbreviations and Acronyms}\label{AA}
-Define abbreviations and acronyms the first time they are used in the text, 
-even after they have been defined in the abstract. Abbreviations such as 
-IEEE, SI, MKS, CGS, ac, dc, and rms do not have to be defined. Do not use 
-abbreviations in the title or heads unless they are unavoidable.
+Tradicionalmente, as abordagens para mitigação do congestionamento concentravam-se em soluções infraestruturais de larga escala, como a ampliação da malha viária, estratégias predominantes nas décadas de 1950 e 1960 sob a influência do modelo rodoviarista \cite{1}. Contudo, a constatação de que a ampliação da oferta viária frequentemente induz à demanda adicional por deslocamentos motorizados levou à necessidade de repensar essas abordagens.
 
-\subsection{Units}
-\begin{itemize}
-\item Use either SI (MKS) or CGS as primary units. (SI units are encouraged.) English units may be used as secondary units (in parentheses). An exception would be the use of English units as identifiers in trade, such as ``3.5-inch disk drive''.
-\item Avoid combining SI and CGS units, such as current in amperes and magnetic field in oersteds. This often leads to confusion because equations do not balance dimensionally. If you must use mixed units, clearly state the units for each quantity that you use in an equation.
-\item Do not mix complete spellings and abbreviations of units: ``Wb/m\textsuperscript{2}'' or ``webers per square meter'', not ``webers/m\textsuperscript{2}''. Spell out units when they appear in text: ``. . . a few henries'', not ``. . . a few H''.
-\item Use a zero before decimal points: ``0.25'', not ``.25''. Use ``cm\textsuperscript{3}'', not ``cc''.)
-\end{itemize}
+A partir dos anos 1990, o debate passou a incorporar dimensões sociais e de equidade urbana. Pereira e Schwanen \cite{4} demonstraram que trabalhadores de baixa renda, residentes em regiões periféricas, gastam até 20\% mais tempo em deslocamentos diários quando comparados a indivíduos de maior poder aquisitivo. Essa desigualdade espacial evidencia a necessidade de compreender não apenas os padrões gerais de tráfego, mas também sua relação com características demográficas e distribuição populacional.
 
-\subsection{Equations}
-Number equations consecutively. To make your 
-equations more compact, you may use the solidus (~/~), the exp function, or 
-appropriate exponents. Italicize Roman symbols for quantities and variables, 
-but not Greek symbols. Use a long dash rather than a hyphen for a minus 
-sign. Punctuate equations with commas or periods when they are part of a 
-sentence, as in:
-\begin{equation}
-a+b=\gamma\label{eq}
-\end{equation}
+O congestionamento resulta de uma combinação complexa de fatores recorrentes e não recorrentes. Entre os fatores recorrentes, destacam-se o volume excessivo de veículos, a capacidade limitada das vias e os horários de pico. Já os fatores não recorrentes incluem incidentes, obras e condições climáticas adversas \cite{2}. Essa multiplicidade de causas demanda ferramentas analíticas sofisticadas, capazes de processar grandes volumes de dados heterogêneos e identificar padrões complexos.
 
-Be sure that the 
-symbols in your equation have been defined before or immediately following 
-the equation. Use ``\eqref{eq}'', not ``Eq.~\eqref{eq}'' or ``equation \eqref{eq}'', except at 
-the beginning of a sentence: ``Equation \eqref{eq} is . . .''
+Com o advento das tecnologias digitais e a consolidação da era do Big Data, novas perspectivas metodológicas emergiram. A disponibilidade crescente de dados georreferenciados, séries temporais de tráfego e informações demográficas detalhadas viabilizou a aplicação de técnicas de aprendizado de máquina para previsão de condições de tráfego. Diferentemente das abordagens baseadas em modelos físicos e simulações de engenharia, que demandam parametrizações complexas, os modelos orientados por dados têm demonstrado capacidade superior de generalização e adaptação a padrões emergentes \cite{5}.
 
-\subsection{\LaTeX-Specific Advice}
+Estudos recentes têm explorado diferentes arquiteturas de aprendizado de máquina aplicadas à previsão de congestionamentos, demonstrando que modelos baseados em ensemble learning, como Random Forest e Gradient Boosting, superam técnicas lineares tradicionais em termos de precisão preditiva, especialmente quando confrontados com padrões não lineares \cite{6}. A capacidade desses modelos de capturar relações hierárquicas torna-os particularmente adequados para contextos urbanos caracterizados por heterogeneidade espacial e temporal.
 
-Please use ``soft'' (e.g., \verb|\eqref{Eq}|) cross references instead
-of ``hard'' references (e.g., \verb|(1)|). That will make it possible
-to combine sections, add equations, or change the order of figures or
-citations without having to go through the file line by line.
+A regressão linear, apesar de sua simplicidade, permanece relevante como baseline metodológico. Algoritmos baseados em instâncias, como K-Nearest Neighbors, têm sido aplicados devido à sua capacidade de capturar padrões locais, embora apresentem limitações de custo computacional em datasets volumosos. As técnicas de ensemble learning, representadas por Random Forest e XGBoost, têm alcançado desempenho superior em diversos problemas de previsão de tráfego, apresentando robustez contra overfitting e eficiência computacional em datasets de grande escala.
 
-Please don't use the \verb|{eqnarray}| equation environment. Use
-\verb|{align}| or \verb|{IEEEeqnarray}| instead. The \verb|{eqnarray}|
-environment leaves unsightly spaces around relation symbols.
+As redes neurais artificiais, em especial os Multilayer Perceptrons, constituem outra classe relevante de modelos. Embora exijam maiores volumes de dados para treinamento e apresentem menor interpretabilidade, oferecem flexibilidade arquitetural que permite modelar interações de alta ordem entre variáveis.
 
-Please note that the \verb|{subequations}| environment in {\LaTeX}
-will increment the main equation counter even when there are no
-equation numbers displayed. If you forget that, you might write an
-article in which the equation numbers skip from (17) to (20), causing
-the copy editors to wonder if you've discovered a new method of
-counting.
+Um aspecto crítico na aplicação de técnicas de aprendizado de máquina é a capacidade de explicar as predições geradas. Técnicas de interpretabilidade como SHAP têm sido crescentemente adotadas para quantificar a contribuição individual de cada variável nas previsões de modelos complexos, permitindo que gestores urbanos compreendam quais fatores exercem maior influência sobre os padrões de congestionamento \cite{7}. Essa transparência metodológica é fundamental para a validação científica dos modelos e para a construção de confiança nas ferramentas computacionais.
 
-{\BibTeX} does not work by magic. It doesn't get the bibliographic
-data from thin air but from .bib files. If you use {\BibTeX} to produce a
-bibliography you must send the .bib files. 
+A relação entre características populacionais e padrões de congestionamento constitui uma linha de investigação particularmente relevante, mas ainda pouco explorada. Enquanto estudos tradicionais concentram-se em variáveis diretas de tráfego, a incorporação de dados demográficos desagregados por região, faixa etária e gênero pode revelar padrões estruturais subjacentes que refletem a organização espacial das atividades urbanas.
 
-{\LaTeX} can't read your mind. If you assign the same label to a
-subsubsection and a table, you might find that Table I has been cross
-referenced as Table IV-B3. 
+No contexto específico de São Paulo, a heterogeneidade demográfica entre os diferentes distritos, combinada com a desigual distribuição de empregos formais e infraestrutura de transporte, sugere que modelos preditivos podem beneficiar-se significativamente da incorporação de variáveis populacionais. A modelagem conjunta dessas características demográficas com séries históricas de congestionamento permite não apenas prever condições futuras de tráfego, mas também identificar áreas prioritárias para intervenções de planejamento urbano.
 
-{\LaTeX} does not have precognitive abilities. If you put a
-\verb|\label| command before the command that updates the counter it's
-supposed to be using, the label will pick up the last counter to be
-cross referenced instead. In particular, a \verb|\label| command
-should not go before the caption of a figure or a table.
+Diante desse panorama, a presente pesquisa explora especificamente a capacidade de diferentes técnicas de aprendizado de máquina em prever padrões de congestionamento a partir de características populacionais desagregadas por distrito, sexo e faixa etária. A proposta metodológica enfatiza não apenas a comparação de desempenho preditivo entre os modelos, mas também a análise de interpretabilidade por meio de técnicas como SHAP, visando identificar quais variáveis demográficas exercem maior influência nos padrões de congestionamento observados na cidade de São Paulo.
 
-Do not use \verb|\nonumber| inside the \verb|{array}| environment. It
-will not stop equation numbers inside \verb|{array}| (there won't be
-any anyway) and it might stop a wanted equation number in the
-surrounding equation.
-
-\subsection{Some Common Mistakes}\label{SCM}
-\begin{itemize}
-\item The word ``data'' is plural, not singular.
-\item The subscript for the permeability of vacuum $\mu_{0}$, and other common scientific constants, is zero with subscript formatting, not a lowercase letter ``o''.
-\item In American English, commas, semicolons, periods, question and exclamation marks are located within quotation marks only when a complete thought or name is cited, such as a title or full quotation. When quotation marks are used, instead of a bold or italic typeface, to highlight a word or phrase, punctuation should appear outside of the quotation marks. A parenthetical phrase or statement at the end of a sentence is punctuated outside of the closing parenthesis (like this). (A parenthetical sentence is punctuated within the parentheses.)
-\item A graph within a graph is an ``inset'', not an ``insert''. The word alternatively is preferred to the word ``alternately'' (unless you really mean something that alternates).
-\item Do not use the word ``essentially'' to mean ``approximately'' or ``effectively''.
-\item In your paper title, if the words ``that uses'' can accurately replace the word ``using'', capitalize the ``u''; if not, keep using lower-cased.
-\item Be aware of the different meanings of the homophones ``affect'' and ``effect'', ``complement'' and ``compliment'', ``discreet'' and ``discrete'', ``principal'' and ``principle''.
-\item Do not confuse ``imply'' and ``infer''.
-\item The prefix ``non'' is not a word; it should be joined to the word it modifies, usually without a hyphen.
-\item There is no period after the ``et'' in the Latin abbreviation ``et al.''.
-\item The abbreviation ``i.e.'' means ``that is'', and the abbreviation ``e.g.'' means ``for example''.
-\end{itemize}
-An excellent style manual for science writers is \cite{b7}.
-
-\subsection{Authors and Affiliations}
-\textbf{The class file is designed for, but not limited to, six authors.} A 
-minimum of one author is required for all conference articles. Author names 
-should be listed starting from left to right and then moving down to the 
-next line. This is the author sequence that will be used in future citations 
-and by indexing services. Names should not be listed in columns nor group by 
-affiliation. Please keep your affiliations as succinct as possible (for 
-example, do not differentiate among departments of the same organization).
-
-\subsection{Identify the Headings}
-Headings, or heads, are organizational devices that guide the reader through 
-your paper. There are two types: component heads and text heads.
-
-Component heads identify the different components of your paper and are not 
-topically subordinate to each other. Examples include Acknowledgments and 
-References and, for these, the correct style to use is ``Heading 5''. Use 
-``figure caption'' for your Figure captions, and ``table head'' for your 
-table title. Run-in heads, such as ``Abstract'', will require you to apply a 
-style (in this case, italic) in addition to the style provided by the drop 
-down menu to differentiate the head from the text.
-
-Text heads organize the topics on a relational, hierarchical basis. For 
-example, the paper title is the primary text head because all subsequent 
-material relates and elaborates on this one topic. If there are two or more 
-sub-topics, the next level head (uppercase Roman numerals) should be used 
-and, conversely, if there are not at least two sub-topics, then no subheads 
-should be introduced.
-
-\subsection{Figures and Tables}
-\paragraph{Positioning Figures and Tables} Place figures and tables at the top and 
-bottom of columns. Avoid placing them in the middle of columns. Large 
-figures and tables may span across both columns. Figure captions should be 
-below the figures; table heads should appear above the tables. Insert 
-figures and tables after they are cited in the text. Use the abbreviation 
-``Fig.~\ref{fig}'', even at the beginning of a sentence.
-
-\begin{table}[htbp]
-\caption{Table Type Styles}
-\begin{center}
-\begin{tabular}{|c|c|c|c|}
-\hline
-\textbf{Table}&\multicolumn{3}{|c|}{\textbf{Table Column Head}} \\
-\cline{2-4} 
-\textbf{Head} & \textbf{\textit{Table column subhead}}& \textbf{\textit{Subhead}}& \textbf{\textit{Subhead}} \\
-\hline
-copy& More table copy$^{\mathrm{a}}$& &  \\
-\hline
-\multicolumn{4}{l}{$^{\mathrm{a}}$Sample of a Table footnote.}
-\end{tabular}
-\label{tab1}
-\end{center}
-\end{table}
+\section{Metodologia}
+A metodologia adotada nesta pesquisa foi estruturada em quatro etapas principais, coleta de dados, tratamento e preparação, testes com algoritmos de machine learning e análise dos resultados. O pipeline seguido está ilustrado na Figura 1.
 
 \begin{figure}[htbp]
-\centerline{\includegraphics{fig1.png}}
-\caption{Example of a figure caption.}
-\label{fig}
+\centering
+\includegraphics[width=0.4\textwidth]{pipeline.png}
+\caption{Pipeline da metodologia}
+\label{fig:pipeline}
 \end{figure}
 
-Figure Labels: Use 8 point Times New Roman for Figure labels. Use words 
-rather than symbols or abbreviations when writing Figure axis labels to 
-avoid confusing the reader. As an example, write the quantity 
-``Magnetization'', or ``Magnetization, M'', not just ``M''. If including 
-units in the label, present them within parentheses. Do not label axes only 
-with units. In the example, write ``Magnetization (A/m)'' or ``Magnetization 
-\{A[m(1)]\}'', not just ``A/m''. Do not label axes with a ratio of 
-quantities and units. For example, write ``Temperature (K)'', not 
-``Temperature/K''.
+Inicialmente, partimos de um dataset referente ao trânsito da cidade de São Paulo. Para enriquecer a análise e estabelecer uma correlação entre o comportamento do trânsito e o crescimento populacional da capital, buscamos dados complementares no portal https://dadosabertos.sp.gov.br. De lá, extraímos um segundo dataset contendo informações sobre a população de São Paulo ao longo dos anos.
 
-\section*{Acknowledgment}
+Na segunda etapa, realizamos a limpeza e padronização dos dados. Os datasets apresentavam ruídos, campos fora de padrão e diferentes codificações de texto (encodings), o que exigiu um processo cuidadoso de tratamento para garantir a compatibilidade e integridade das informações. Após a unificação dos dados, com as variáveis devidamente estruturadas, avançamos para a etapa de testes com algoritmos de aprendizado de máquina.
 
-The preferred spelling of the word ``acknowledgment'' in America is without 
-an ``e'' after the ``g''. Avoid the stilted expression ``one of us (R. B. 
-G.) thanks $\ldots$''. Instead, try ``R. B. G. thanks$\ldots$''. Put sponsor 
-acknowledgments in the unnumbered footnote on the first page.
+Os testes foram conduzidos com diferentes modelos, e os resultados foram armazenados para posterior comparação, tanto em termos de desempenho quanto de qualidade preditiva. Essa abordagem permitiu avaliar a eficácia dos algoritmos frente aos dados tratados e entender melhor a relação entre o crescimento populacional e o impacto no trânsito da cidade.
 
-\section*{References}
+\subsection{Datasets}
+O ponto de partida da pesquisa foi a seleção de um dataset sobre o trânsito da cidade de São Paulo. Este conjunto de dados se mostrou especialmente relevante por conter informações como dia, hora, região e, principalmente, o nível de congestionamento, variável central para os objetivos do estudo. Algumas colunas adicionais estavam presentes, mas foram descartadas por não contribuírem diretamente para a análise proposta.
 
-Please number citations consecutively within brackets \cite{b1}. The 
-sentence punctuation follows the bracket \cite{b2}. Refer simply to the reference 
-number, as in \cite{b3}---do not use ``Ref. \cite{b3}'' or ``reference \cite{b3}'' except at 
-the beginning of a sentence: ``Reference \cite{b3} was the first $\ldots$''
+Para estabelecer uma correlação entre o comportamento do trânsito e o crescimento populacional da cidade, foi incorporado um segundo dataset, obtido por meio do portal dadosabertos.gov.sp Este conjunto trazia dados populacionais da capital paulista ao longo dos anos, incluindo as variáveis ano, distrito, sexo, faixa etária e população total.
 
-Number footnotes separately in superscripts. Place the actual footnote at 
-the bottom of the column in which it was cited. Do not put footnotes in the 
-abstract or reference list. Use letters for table footnotes.
+Apesar da riqueza informacional, esse segundo dataset apresentou desafios técnicos. Havia ruídos nos dados, campos fora de padrão e codificações de texto distintas (encodings), o que exigiu um esforço adicional para uniformização e tratamento adequado. Um ponto específico que merece destaque é a estrutura da variável idade, que estava agrupada em faixas etárias (por exemplo, "10 a 14 anos", "15 a 19 anos"). Essa segmentação dificultou a filtragem precisa de indivíduos com idade mínima para conduzir veículos (a partir dos 18 anos), sendo possível apenas considerar faixas a partir dos 20 anos, o que introduz um pequeno desvio na análise.
 
-Unless there are six authors or more give all authors' names; do not use 
-``et al.''. Papers that have not been published, even if they have been 
-submitted for publication, should be cited as ``unpublished'' \cite{b4}. Papers 
-that have been accepted for publication should be cited as ``in press'' \cite{b5}. 
-Capitalize only the first word in a paper title, except for proper nouns and 
-element symbols.
+A aquisição dos dados, portanto, envolveu não apenas a seleção criteriosa dos conjuntos mais relevantes, mas também a antecipação dos desafios que seriam enfrentados nas etapas seguintes de tratamento e modelagem.
 
-For papers published in translation journals, please give the English 
-citation first, followed by the original foreign-language citation \cite{b6}.
+\subsection{limpeza e preparacao}
+
+Para assegurar a consistência e a qualidade dos dados utilizados na modelagem preditiva, foram desenvolvidos dois pipelines automatizados de pré-processamento, um voltado ao tratamento dos dados populacionais e outro dedicado ao conjunto de dados de congestionamentos de tráfego. Ambos os processos tiveram como objetivo padronizar formatos, remover inconsistências e preparar os dados para a etapa de integração e posterior aplicação de algoritmos de aprendizado de máquina.
+
+O conjunto populacional passou por um tratamento mais detalhado, executado pelo script python . Inicialmente, todos os campos textuais foram normalizados por meio da remoção de acentuação e da padronização de espaços, garantindo uniformidade entre distritos e categorias. Em seguida, foi aplicado um filtro para manter apenas as faixas etárias com idade igual ou superior a 20 anos, de por conta de limitações do dataset, mais diretamente relacionada aos padrões de deslocamento urbano. Na sequência, foi criada uma nova variável denominada região, obtida a partir do mapeamento de cada distrito para uma das cinco grandes áreas geográficas de São Paulo: norte, sul, leste, oeste e centro. Esse mapeamento foi implementado por meio de um dicionário abrangendo os 96 distritos oficiais do município, permitindo uma agregação coerente com as divisões espaciais utilizadas nos dados de tráfego. Por fim, distritos que não possuíam correspondência foram identificados e registrados em um arquivo auxiliar para verificação manual, garantindo a completude do mapeamento antes da exportação final dos dados, que foram salvos em formato CSV com codificação UTF-8 padronizada.
+
+O conjunto de dados de tráfego, processado pelo script python, exigiu um tratamento voltado principalmente à validação e à consistência das informações temporais e geográficas. As etapas iniciais incluíram a normalização dos campos textuais referentes a vias, regiões e expressways, removendo acentuação e espaços redundantes. Em seguida, foi realizada a validação das variáveis de data e hora, assegurando que apenas registros com formato temporal correto fossem mantidos. O campo de tamanho do congestionamento também passou por verificação, sendo eliminados valores negativos, nulos ou não numéricos. As regiões foram padronizadas para um formato em letras minúsculas e comparadas a uma lista de referência contendo as mesmas categorias usadas no dataset populacional, garantindo a compatibilidade entre as bases. Registros duplicados foram identificados e removidos, e, ao final, foi gerado um relatório estatístico que resumiu a distribuição dos congestionamentos por região, além de medidas descritivas como média, mediana e desvio padrão do tamanho dos congestionamentos.
+
+Ambos os conjuntos de dados resultantes foram padronizados quanto à codificação e ao delimitador, de forma a assegurar compatibilidade durante o processo de integração. Essa padronização foi fundamental para que os datasets pudessem ser combinados por meio das variáveis região e ano, possibilitando análises conjuntas sobre o impacto da densidade populacional no comportamento do tráfego e permitindo que as etapas seguintes de modelagem preditiva fossem conduzidas de maneira consistente e reprodutível.
+
 
 \begin{thebibliography}{00}
-\bibitem{b1} G. Eason, B. Noble, and I. N. Sneddon, ``On certain integrals of Lipschitz-Hankel type involving products of Bessel functions,'' Phil. Trans. Roy. Soc. London, vol. A247, pp. 529--551, April 1955.
-\bibitem{b2} J. Clerk Maxwell, A Treatise on Electricity and Magnetism, 3rd ed., vol. 2. Oxford: Clarendon, 1892, pp.68--73.
-\bibitem{b3} I. S. Jacobs and C. P. Bean, ``Fine particles, thin films and exchange anisotropy,'' in Magnetism, vol. III, G. T. Rado and H. Suhl, Eds. New York: Academic, 1963, pp. 271--350.
-\bibitem{b4} K. Elissa, ``Title of paper if known,'' unpublished.
-\bibitem{b5} R. Nicole, ``Title of paper with only first word capitalized,'' J. Name Stand. Abbrev., in press.
-\bibitem{b6} Y. Yorozu, M. Hirano, K. Oka, and Y. Tagawa, ``Electron spectroscopy studies on magneto-optical media and plastic substrate interface,'' IEEE Transl. J. Magn. Japan, vol. 2, pp. 740--741, August 1987 [Digests 9th Annual Conf. Magnetics Japan, p. 301, 1982].
-\bibitem{b7} M. Young, The Technical Writer's Handbook. Mill Valley, CA: University Science, 1989.
+
+\bibitem{1} G. S. B. Vianna and C. Young, ``Em busca do tempo perdido: uma estimativa do produto perdido em trânsito no Brasil,'' \textit{Revista de Economia Contemporânea}, vol. 19, no. 3, pp. 403--416, set.--dez. 2015.
+\bibitem{2} M. Akhtar and S. Moridpour, ``A review of traffic congestion prediction using artificial intelligence,'' \textit{Journal of Advanced Transportation}, vol. 2021, pp. 1--18, 2021.
+\bibitem{3} D. B. Vale, ``The welfare costs of traffic congestion in São Paulo Metropolitan Area,'' Tese (Doutorado), Universidade de São Paulo, São Paulo, 2018.
+\bibitem{4} R. H. M. Pereira and T. Schwanen, ``Tempo de deslocamento casa-trabalho no Brasil (1992-2009): diferenças entre regiões metropolitanas, níveis de renda e sexo,'' Texto para Discussão, IPEA, Brasília, n. 1813, 2013.
+\bibitem{5} E. I. Vlahogianni, M. G. Karlaftis, and J. C. Golias, ``Short-term traffic forecasting: where we are and where we're going,'' \textit{Transportation Research Part C: Emerging Technologies}, vol. 43, pp. 3--19, 2014.
+\bibitem{6} P. Zechin et al., ``Traffic congestion prediction using machine learning techniques,'' in \textit{Proceedings of the 11th Brazilian Conference on Intelligent Systems}, Campinas: SBC, 2022, pp. 214--225.
+\bibitem{7} S. M. Lundberg and S.-I. Lee, ``A unified approach to interpreting model predictions,'' in \textit{Proceedings of the 31st Conference on Neural Information Processing Systems}, Long Beach: NIPS, 2017, pp. 4765--4774.
+
 \end{thebibliography}
-\vspace{12pt}
-\color{red}
-IEEE conference templates contain guidance text for composing and formatting conference papers. Please ensure that all template text is removed from your conference paper prior to submission to the conference. Failure to remove the template text from your paper may result in your paper not being published.
+
 
 \end{document}
