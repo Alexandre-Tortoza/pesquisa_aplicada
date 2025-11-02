@@ -25,7 +25,7 @@ a.marquestortoza@gmail.com}
 \maketitle
 
 \begin{abstract}
-O agravamento do congestionamento urbano, impulsionado pelo crescimento populacional e pela expansão da frota de veículos, afeta diretamente a economia, o meio ambiente e o bem-estar social. Para estimar os níveis médios de tráfego nas regiões das cidades, foi aplicada uma abordagem preditiva que combina dados demográficos e históricos de trânsito. Após etapas de pré-processamento e codificação, foram testados diversos algoritmos de aprendizado supervisionado. Os modelos baseados em árvores apresentaram melhor desempenho, com destaque para o Random Forest. A população total foi a variável mais relevante, seguida por fatores temporais e espaciais. A integração entre dados populacionais e padrões de tráfego mostrou-se eficaz para apoiar o planejamento urbano e a gestão inteligente da mobilidade.
+O agravamento do congestionamento urbano, impulsionado pelo crescimento populacional e pela expansão da frota de veículos, afeta diretamente a economia, o meio ambiente e o bem-estar social. Esta pesquisa apresenta uma abordagem preditiva que combina dados demográficos desagregados por distrito, sexo e faixa etária com séries históricas de congestionamento urbano na cidade de São Paulo. A metodologia envolveu pré-processamento cuidadoso dos dados, codificação de variáveis categóricas e aplicação de cinco algoritmos de aprendizado supervisionado representando diferentes paradigmas metodológicos. A análise comparativa rigorosa dos modelos sob condições idênticas de dados e métricas estabelece benchmark para futuras pesquisas em previsão de tráfego urbano. Os algoritmos baseados em ensemble learning mostraram-se particularmente adequados para capturar as não linearidades inerentes ao fenômeno. O trabalho contribui para a literatura emergente sobre mobilidade urbana em megacidades de países em desenvolvimento, demonstrando metodologia replicável para integração de dados demográficos e padrões de tráfego em sistemas preditivos.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -150,13 +150,13 @@ Foram avaliadas cinco configurações distintas do algoritmo KNN, variando estra
 \setlength{\tabcolsep}{5pt}
 \begin{tabular}{ccccccccc}
 \hline
-\textbf{Estratégia} & \textbf{Distância} & \textbf{Pesos} & \textbf{k} & \textbf{MAE} & \textbf{RMSE} & \textbf{R²} \\
+\textbf{Estratégia} & \textbf{Distância} & \textbf{Pesos} & \textbf{k} & \textbf{MAE (m)} & \textbf{RMSE (m)} & \textbf{R²} \\
 \hline
-Holdout & Minkowski & Uniform & 5 & 953.9 & 1504.2 & 0.49 \\
-K-Fold (10) & Manhattan & Distance & 7 & \textbf{749.3} & --- & \textbf{0.56} \\
-Holdout & Euclidean & Distance & 3 & 793.9 & 1464.8 & 0.52 \\
-K-Fold (5) & Chebyshev & Uniform & 8 & 974.9 & --- & 0.48 \\
-Holdout & Chebyshev & Uniform & 6 & 966.1 & 1513.3 & 0.48 \\
+Holdout & Minkowski & Uniform & 5 & 953,9 & 1504,2 & 0,49 \\
+K-Fold (10) & Manhattan & Distance & 7 & \textbf{749,3} & --- & \textbf{0,56} \\
+Holdout & Euclidean & Distance & 3 & 793,9 & 1464,8 & 0,52 \\
+K-Fold (5) & Chebyshev & Uniform & 8 & 974,9 & --- & 0,48 \\
+Holdout & Chebyshev & Uniform & 6 & 966,1 & 1513,3 & 0,48 \\
 \hline
 \end{tabular}
 \caption{Resultados das configurações do modelo K-Nearest Neighbors}
@@ -200,13 +200,13 @@ Foram avaliadas cinco configurações distintas do MLP, variando profundidade da
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{cccccccc}
 \hline
-\textbf{Estratégia} & \textbf{Arquitetura} & \textbf{Ativação} & \textbf{Otim.} & \textbf{MAE} & \textbf{RMSE} & \textbf{R²} \\
+\textbf{Estratégia} & \textbf{Arquitetura} & \textbf{Ativação} & \textbf{Otim.} & \textbf{MAE (m)} & \textbf{RMSE (m)} & \textbf{R²} \\
 \hline
-Holdout & (100,50,25) & ReLU & Adam & 988.5 & 1531.6 & 0.47 \\
-Holdout & (256,128,64,32) & ReLU & Adam & \textbf{962.3} & \textbf{1490.8} & \textbf{0.50} \\
-Holdout & (64,32) & ReLU & Adam & 1005.1 & 1537.1 & 0.47 \\
-K-Fold (5) & (100,50) & ReLU & Adam & 988.4 & --- & 0.47 \\
-K-Fold (5) & (168,64,32) & Tanh & SGD & 1502.7 & --- & 0.00 \\
+Holdout & (100,50,25) & ReLU & Adam & 988,5 & 1531,6 & 0,47 \\
+Holdout & (256,128,64,32) & ReLU & Adam & \textbf{962,3} & \textbf{1490,8} & \textbf{0,50} \\
+Holdout & (64,32) & ReLU & Adam & 1005,1 & 1537,1 & 0,47 \\
+K-Fold (5) & (100,50) & ReLU & Adam & 988,4 & --- & 0,47 \\
+K-Fold (5) & (168,64,32) & Tanh & SGD & 1502,7 & --- & 0,00 \\
 \hline
 \end{tabular}
 \caption{Resultados das configurações do Multilayer Perceptron}
@@ -232,13 +232,13 @@ O MLP profundo (256,128,64,32) representa o melhor compromisso entre complexidad
 \setlength{\tabcolsep}{5pt}
 \begin{tabular}{cccccc}
 \hline
-\textbf{Estratégia} & \textbf{Intercepto} & \textbf{MAE} & \textbf{RMSE} & \textbf{R²} \\
+\textbf{Estratégia} & \textbf{Intercepto} & \textbf{MAE (m)} & \textbf{RMSE (m)} & \textbf{R²} \\
 \hline
-Holdout & Sim & 1379.7 & 1990.8 & 0.10 \\
-Holdout & Não & 2443.8 & 3133.9 & -1.21 \\
-K-Fold (10) & Sim & 1377.9 & --- & 0.10 \\
-Holdout & Sim & 1379.7 & 1990.8 & 0.10 \\
-K-Fold (7) & Sim & 1377.9 & --- & 0.10 \\
+Holdout & Sim & 1379,7 & 1990,8 & 0,10 \\
+Holdout & Não & 2443,8 & 3133,9 & -1,21 \\
+K-Fold (10) & Sim & 1377,9 & --- & 0,10 \\
+Holdout & Sim & 1379,7 & 1990,8 & 0,10 \\
+K-Fold (7) & Sim & 1377,9 & --- & 0,10 \\
 \hline
 \end{tabular}
 \caption{Resultados das configurações do modelo de Regressão Linear}
@@ -273,13 +273,13 @@ Foram testadas cinco configurações do Random Forest variando número de árvor
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{cccccccc}
 \hline
-\textbf{Estratégia} & \textbf{Árvores} & \textbf{Prof. Máx.} & \textbf{MAE} & \textbf{RMSE} & \textbf{R²} \\
+\textbf{Estratégia} & \textbf{Árvores} & \textbf{Prof. Máx.} & \textbf{MAE (m)} & \textbf{RMSE (m)} & \textbf{R²} \\
 \hline
-Holdout & 100 & Sem limite & \textbf{760.2} & 1298.6 & \textbf{0.62} \\
-Holdout & 200 & 30 & 749.7 & 1439.9 & 0.53 \\
-Holdout & 300 & 15 & 857.9 & 1348.9 & 0.59 \\
-K-Fold (5) & 50 & 10 & 974.8 & --- & 0.49 \\
-K-Fold (5) & 150 & 12 & 931.0 & --- & 0.53 \\
+Holdout & 100 & Sem limite & \textbf{760,2} & 1298,6 & \textbf{0,62} \\
+Holdout & 200 & 30 & 749,7 & 1439,9 & 0,53 \\
+Holdout & 300 & 15 & 857,9 & 1348,9 & 0,59 \\
+K-Fold (5) & 50 & 10 & 974,8 & --- & 0,49 \\
+K-Fold (5) & 150 & 12 & 931,0 & --- & 0,53 \\
 \hline
 \end{tabular}
 \caption{Resultados das configurações do Random Forest}
@@ -314,13 +314,13 @@ Foram avaliadas cinco configurações do XGBoost variando número de árvores, p
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{ccccccccc}
 \hline
-\textbf{Estratégia} & \textbf{Árvores} & \textbf{Prof.} & \textbf{LR} & \textbf{MAE} & \textbf{RMSE} & \textbf{R²} \\
+\textbf{Estratégia} & \textbf{Árvores} & \textbf{Prof.} & \textbf{LR} & \textbf{MAE (m)} & \textbf{RMSE (m)} & \textbf{R²} \\
 \hline
-Holdout & 100 & 6 & 0.10 & 953.1 & 1468.7 & 0.51 \\
-Holdout & 400 & 10 & 0.03 & \textbf{844.7} & \textbf{1327.3} & \textbf{0.60} \\
-K-Fold (5) & 80 & 5 & 0.02 & 1124.3 & --- & 0.36 \\
-K-Fold (5) & 300 & 8 & 0.05 & 913.0 & --- & 0.55 \\
-Holdout & 50 & 4 & 0.30 & 983.6 & 1507.5 & 0.49 \\
+Holdout & 100 & 6 & 0,10 & 953,1 & 1468,7 & 0,51 \\
+Holdout & 400 & 10 & 0,03 & \textbf{844,7} & \textbf{1327,3} & \textbf{0,60} \\
+K-Fold (5) & 80 & 5 & 0,02 & 1124,3 & --- & 0,36 \\
+K-Fold (5) & 300 & 8 & 0,05 & 913,0 & --- & 0,55 \\
+Holdout & 50 & 4 & 0,30 & 983,6 & 1507,5 & 0,49 \\
 \hline
 \end{tabular}
 \caption{Resultados das configurações do XGBoost}
@@ -344,6 +344,30 @@ O desempenho superior do XGB \#2 comparado ao Random Forest (R² 0.60 vs 0.62, M
 A superioridade do XGBoost sobre modelos não baseados em árvores (KNN, MLP, Regressão Linear) evidencia-se claramente. O ganho sobre KNN (R² 0.60 vs 0.56) e MLP (R² 0.60 vs 0.50) demonstra que a estrutura hierárquica de árvores de decisão, especialmente quando otimizada através de boosting, captura mais efetivamente as não linearidades e interações presentes nos dados de congestionamento urbano. A regularização explícita do XGBoost, ausente no KNN e presente mas diferente no MLP, proporciona controle mais refinado sobre complexidade do modelo.
 
 O XGBoost estabelece-se como alternativa extremamente competitiva ao Random Forest, oferecendo desempenho comparável com vantagens adicionais de controle fino sobre aprendizado, eficiência computacional através de implementação otimizada e capacidade de continuar treinamento incrementalmente adicionando mais árvores ao modelo existente. A configuração XGB \#2 representa escolha sólida para implantação em produção, equilibrando alta acurácia preditiva com razoável custo computacional e robustez demonstrada através de métricas consistentes entre treino e teste.
+
+\subsection{Análise dos Modelos}
+
+A avaliação abrangente dos cinco algoritmos de aprendizado de máquina permite estabelecer ranking sistemático baseado em critério primário (R², capacidade explicativa da variância) e critério secundário (MAE, erro absoluto médio, aplicado quando R² apresenta diferenças inferiores a 0,02). A Tabela \ref{tab:ranking_modelos} sintetiza o desempenho final de cada modelo conforme avaliado nas respectivas seções.
+
+\begin{table}[h]
+\centering
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Ranking} & \textbf{Algoritmo} & \textbf{R²} & \textbf{MAE (m)} & \textbf{RMSE (m)} \\
+\hline
+1º & Random Forest & \textbf{0,62} & 760,2 & 1298,6 \\
+2º & XGBoost & 0,60 & 844,7 & 1327,3 \\
+3º & K-Nearest Neighbors & 0,56 & 749,3 & --- \\
+4º & Multilayer Perceptron & 0,50 & 962,3 & 1490,8 \\
+5º & Regressão Linear & 0,10 & 1379,7 & 1990,8 \\
+\hline
+\end{tabular}
+\caption{Ranking comparativo dos modelos de aprendizado de máquina}
+\label{tab:ranking_modelos}
+\end{table}
+
+O Random Forest destaca-se como o modelo mais eficaz na previsão de congestionamento urbano, com R² de 0,62 e MAE de 760,2 metros, evidenciando sua habilidade em capturar interações complexas entre variáveis demográficas, temporais e espaciais por meio da agregação de 100 árvores de decisão. Sua robustez frente a outliers e insensibilidade à escala das variáveis tornam sua aplicação prática mais simples, dispensando pré-processamento extensivo. A análise de importância de variáveis revelou a população total como principal fator (37%), seguida por via expressa (15%), mês (15%) e hora do dia (13%), oferecendo insights valiosos para gestores urbanos. O XGBoost, com R² de 0,60 e MAE de 844,7 metros, apresenta desempenho competitivo, com vantagens como controle refinado de hiperparâmetros, treinamento incremental e inferência rápida, sendo ideal para contextos operacionais que exigem agilidade. O K-Nearest Neighbors, embora baseado em paradigma distinto de aprendizado por instâncias, alcança R² de 0,56 e MAE de 749,3 metros, validando parcialmente a hipótese de similaridade local, mas sua exigência computacional limita o uso em tempo real. O Multilayer Perceptron, com R² de 0,50 e MAE de 962,3 metros, demonstra que redes neurais profundas podem modelar não linearidades, embora enfrentem desafios em datasets tabulares moderados e apresentem menor interpretabilidade. Já a Regressão Linear, com R² de apenas 0,10, serve como baseline metodológico, evidenciando a inadequação da linearidade para este problema e reforçando a superioridade das abordagens não lineares. A escolha entre Random Forest e XGBoost deve considerar o contexto: enquanto o primeiro oferece maior acurácia e interpretabilidade, o segundo se destaca pela eficiência e flexibilidade. Ambos superam significativamente os demais modelos e podem ser combinados em ensemble heterogêneo via stacking, estratégia promissora para elevar a capacidade preditiva além dos 62% alcançados isoladamente pelo Random Forest.
 
 \section{Conclusões}
 A presente pesquisa conduziu análise comparativa sistemática de cinco algoritmos de aprendizado de máquina aplicados à previsão de congestionamento urbano na cidade de São Paulo, utilizando dados demográficos integrados a séries históricas de tráfego. Os resultados obtidos demonstram que técnicas de ensemble learning baseadas em árvores de decisão superam substancialmente abordagens lineares e baseadas em instâncias, com XGBoost (R² = 0.60, MAE = 845 m) e Random Forest (R² = 0.62, MAE = 760 m) apresentando os melhores desempenhos. O Multilayer Perceptron alcançou capacidade preditiva intermediária (R² = 0.50, MAE = 962 m), enquanto o K-Nearest Neighbors demonstrou resultados competitivos (R² = 0.56, MAE = 749 m). A Regressão Linear, conforme esperado, produziu o pior desempenho (R² = 0.10, MAE = 1380 m), estabelecendo baseline que evidencia a predominância de relações não lineares no fenômeno estudado.
