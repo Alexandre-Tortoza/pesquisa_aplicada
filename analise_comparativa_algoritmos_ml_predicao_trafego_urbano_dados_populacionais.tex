@@ -91,7 +91,7 @@ Na segunda etapa, foi realizada a limpeza e padronização dos dados. Os dataset
 
 Na terceira etapa, foram implementados e treinados diferentes modelos de machine learning, cada um com suas configurações e hiperparâmetros específicos. A quarta etapa consistiu na execução dos scripts desenvolvidos para obtenção dos valores das métricas de desempenho de cada modelo. Por fim, a quinta etapa envolveu a interpretação e análise comparativa dos resultados obtidos, permitindo avaliar a eficácia dos algoritmos frente aos dados tratados e compreender melhor a relação entre o crescimento populacional e o impacto no trânsito da cidade.
 
-\subsection{Aquisição de Dados}\
+\subsection{Aquisição de Dados}
 O ponto de partida da pesquisa foi a seleção de um dataset sobre o trânsito da cidade de São Paulo. Este conjunto de dados se mostrou especialmente relevante por conter informações como dia, hora, região e, principalmente, o nível de congestionamento, variável central para os objetivos do estudo. O dataset original contém 77.159 registros com as seguintes variáveis: identificador único, data, hora, nome da via, direção, via expressa, tamanho do congestionamento em metros e região da cidade. Algumas colunas adicionais estavam presentes, mas foram descartadas por não contribuírem diretamente para a análise proposta.
 
 Para estabelecer uma correlação entre o comportamento do trânsito e o crescimento populacional da cidade, foi incorporado um segundo dataset, obtido por meio do Portal de Dados Abertos do Estado de São Paulo \cite{8}. Este conjunto (\texttt{estimativa\_pop\_idade\_sexo\_msp.csv}) trazia dados populacionais da capital paulista ao longo dos anos, incluindo as variáveis ano, código do distrito, nome do distrito, sexo, faixa etária e população total. O dataset original contém 81.601 registros distribuídos pelos distritos do município.
@@ -127,7 +127,7 @@ A avaliação sistemática dos algoritmos selecionados revelou desempenho substa
 
 \subsection{K-Nearest Neighbors}
 
-O algoritmo K-Nearest Neighbors fundamenta-se no princípio de aprendizado baseado em instâncias, onde predições são derivadas através da agregação dos k vizinhos mais próximos no espaço de features. Este método não paramétrico demonstrou desempenho moderado na previsão de congestionamento urbano, alcançando coeficiente de determinação de 0,56 na melhor configuração testada, com erro médio absoluto de 749,3 metros, evidenciando sua capacidade de capturar heterogeneidades espaciais e temporais sem imposição de estrutura funcional global.
+O algoritmo K-Nearest Neighbors fundamenta-se no princípio de aprendizado baseado em instâncias, onde predições são derivadas através da agregação dos k vizinhos mais próximos no espaço de features. Este método não paramétrico demonstrou desempenho moderado na previsão de congestionamento urbano, alcançando coeficiente de determinação de 0,56 na melhor configuração testada, com erro médio absoluto de 749,3 metros, evidenciando sua capacidade de capturar heterogeneidades espaciais e temporais sem imposição de estrutura funcional global. A Tabela \ref{tab:resultados_knn} apresenta os resultados obtidos para as diferentes configurações testadas.
 
 \begin{table}[h]
 \centering
@@ -157,7 +157,7 @@ As configurações KNN \#4 e KNN \#5 testaram a métrica de Chebyshev, que consi
 
 \subsection{Regressão Linear}
 
-A regressão linear, técnica fundamental de modelagem estatística, estabelece relações lineares entre variáveis preditoras e variável dependente através de minimização de erros quadráticos. Nesta aplicação de previsão de congestionamento urbano, o método apresentou desempenho substancialmente limitado, com coeficiente de determinação de apenas 0,10, explicando apenas 10\% da variância observada. Este resultado confirma empiricamente que as relações entre características demográficas, temporais e espaciais com congestionamento são fundamentalmente não lineares e envolvem interações complexas que não podem ser capturadas por combinações aditivas simples de features.
+A regressão linear, técnica fundamental de modelagem estatística, estabelece relações lineares entre variáveis preditoras e variável dependente através de minimização de erros quadráticos. Nesta aplicação de previsão de congestionamento urbano, o método apresentou desempenho substancialmente limitado, com coeficiente de determinação de apenas 0,10, explicando apenas 10\% da variância observada. Este resultado confirma empiricamente que as relações entre características demográficas, temporais e espaciais com congestionamento são fundamentalmente não lineares e envolvem interações complexas que não podem ser capturadas por combinações aditivas simples de features. A Tabela \ref{tab:resultados_linear} sumariza os resultados das configurações testadas.
 
 \begin{table}[h]
 \centering
@@ -187,7 +187,7 @@ O papel da regressão linear nesta pesquisa consolida-se como baseline metodoló
 
 \subsection{Multilayer Perceptron}
 
-O Multilayer Perceptron, representando arquitetura fundamental de redes neurais artificiais, demonstra capacidade teórica de aproximar universalmente funções contínuas através de múltiplas camadas de neurônios com funções de ativação não lineares. Nesta pesquisa, o modelo apresentou desempenho intermediário com coeficiente de determinação de 0,50 na melhor configuração, explicando metade da variância do congestionamento com erro médio absoluto de 962,3 metros, demonstrando eficácia razoável na captura de relações não lineares mas inferior aos métodos baseados em árvores de decisão.
+O Multilayer Perceptron, representando arquitetura fundamental de redes neurais artificiais, demonstra capacidade teórica de aproximar universalmente funções contínuas através de múltiplas camadas de neurônios com funções de ativação não lineares. Nesta pesquisa, o modelo apresentou desempenho intermediário com coeficiente de determinação de 0,50 na melhor configuração, explicando metade da variância do congestionamento com erro médio absoluto de 962,3 metros, demonstrando eficácia razoável na captura de relações não lineares mas inferior aos métodos baseados em árvores de decisão. A Tabela \ref{tab:resultados_mlp} consolida os resultados das arquiteturas exploradas.
 
 \begin{table}[h]
 \centering
@@ -219,7 +219,7 @@ A configuração MLP \#5 testou combinação alternativa de função de ativaç�
 
 \subsection{Random Forest}
 
-O algoritmo Random Forest, técnica de ensemble que agrega múltiplas árvores de decisão treinadas independentemente sobre subconjuntos dos dados, demonstrou superior capacidade de previsão de congestionamento urbano nesta pesquisa. O modelo alcançou o melhor desempenho global com coeficiente de determinação de 0,62 e erro médio absoluto de 760,2 metros, explicando aproximadamente dois terços da variância observada, evidenciando eficácia notável em capturar não linearidades, interações entre variáveis e heterogeneidades espaciais característica de padrões de tráfego urbano.
+O algoritmo Random Forest, técnica de ensemble que agrega múltiplas árvores de decisão treinadas independentemente sobre subconjuntos dos dados, demonstrou superior capacidade de previsão de congestionamento urbano nesta pesquisa. O modelo alcançou o melhor desempenho global com coeficiente de determinação de 0,62 e erro médio absoluto de 760,2 metros, explicando aproximadamente dois terços da variância observada, evidenciando eficácia notável em capturar não linearidades, interações entre variáveis e heterogeneidades espaciais característica de padrões de tráfego urbano. A Tabela \ref{tab:resultados_rf} detalha o desempenho das configurações avaliadas.
 
 \begin{table}[h]
 \centering
@@ -249,7 +249,7 @@ As configurações RF \#4 e RF \#5 empregaram validação cruzada 5-fold com arq
 
 \subsection{XGBoost}
 
-O algoritmo XGBoost, implementação otimizada de gradient boosting que constrói modelos sequencialmente corrigindo erros residuais das árvores anteriores, apresentou desempenho competitivo com o Random Forest. O modelo alcançou coeficiente de determinação de 0,60 e erro médio absoluto de 844,7 metros na melhor configuração testada, evidenciando eficácia comparable ao Random Forest com vantagens adicionais em controle fino de hiperparâmetros, treinamento incremental e velocidade de inferência. O algoritmo combina estratégias de regularização explícita, aproximação por histograma e paralelização automática, resultando em capacidade preditiva robusta com menor requisito computacional que Random Forest.
+O algoritmo XGBoost, implementação otimizada de gradient boosting que constrói modelos sequencialmente corrigindo erros residuais das árvores anteriores, apresentou desempenho competitivo com o Random Forest. O modelo alcançou coeficiente de determinação de 0,60 e erro médio absoluto de 844,7 metros na melhor configuração testada, evidenciando eficácia comparable ao Random Forest com vantagens adicionais em controle fino de hiperparâmetros, treinamento incremental e velocidade de inferência. O algoritmo combina estratégias de regularização explícita, aproximação por histograma e paralelização automática, resultando em capacidade preditiva robusta com menor requisito computacional que Random Forest. A Tabela \ref{tab:resultados_xgb} apresenta os experimentos realizados com diferentes configurações.
 
 \begin{table}[h]
 \centering
@@ -300,11 +300,6 @@ Os resultados obtidos estabelecem que algoritmos de aprendizado de máquina, par
 \bibitem{6} P. Zechin et al., ``Traffic congestion prediction using machine learning techniques,'' in \textit{Proceedings of the 11th Brazilian Conference on Intelligent Systems}, Campinas: SBC, 2022, pp. 214--225.
 \bibitem{7} S. M. Lundberg and S.-I. Lee, ``A unified approach to interpreting model predictions,'' in \textit{Proceedings of the 31st Conference on Neural Information Processing Systems}, Long Beach: NIPS, 2017, pp. 4765--4774.
 \bibitem{8} Governo do Estado de São Paulo, ``Portal de Dados Abertos do Estado de São Paulo,'' 2025. [Online]. Disponível: https://dadosabertos.sp.gov.br
-\bibitem{9} IBM, ``What is the k-nearest neighbors algorithm?,'' IBM Think Topics, 2025. [Online]. Disponível em: https://www.ibm.com/think/topics/knn
-\bibitem{10} Fahs, W. et al., ``Traffic congestion prediction using machine learning techniques,'' \textit{Procedia Computer Science}, vol. 220, pp. 202--209, 2023.
-\bibitem{11} Akhtar, M., \& Moridpour, S. (2021). A review of traffic congestion prediction using artificial intelligence. \textit{Journal of Advanced Transportation}, 2021, 1-18.
-\bibitem{12} Breiman, L. (2001). Random forests. \textit{Machine Learning}, 45(1), 5--32.
-\bibitem{13} Chen, T., \& Guestrin, C. (2016). XGBoost: A scalable tree boosting system. In \textit{Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining} (pp. 785--794). ACM.
 
 \end{thebibliography}
 
